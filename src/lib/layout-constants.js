@@ -13,7 +13,12 @@ const STAGE_SIZE_MODES = keyMirror({
     /**
      * The "small stage" button is pressed; the user would like a small stage.
      */
-    small: null
+    small: null,
+
+    /**
+     * The "extra large stage" button is pressed; the user would like an extra large stage.
+     */
+    extraLarge: null
 });
 
 /**
@@ -34,7 +39,12 @@ const STAGE_DISPLAY_SIZES = keyMirror({
     /**
      * Small stage (ignores browser width)
      */
-    small: null
+    small: null,
+
+    /**
+     * Extra large stage (ignores browser width)
+     */
+    extraLarge: null
 });
 
 // zoom level to start with
@@ -44,10 +54,11 @@ const STAGE_DISPLAY_SCALES = {};
 STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.large] = 1; // large mode, wide browser (standard)
 STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.largeConstrained] = 0.85; // large mode but narrow browser
 STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.small] = 0.5; // small mode, regardless of browser size
+STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.extraLarge] = 1.5; // extra large mode (972×729)
 
 export default {
-    standardStageWidth: 480,
-    standardStageHeight: 360,
+    standardStageWidth: 648,
+    standardStageHeight: 486,
     fullSizeMinWidth: 1096,
     fullSizePaintMinWidth: 1250
 };

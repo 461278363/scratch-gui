@@ -14,6 +14,7 @@ import {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 import fullScreenIcon from './icon--fullscreen.svg';
 import largeStageIcon from './icon--large-stage.svg';
 import smallStageIcon from './icon--small-stage.svg';
+import extraLargeStageIcon from './icon--extra-large-stage.png';
 import unFullScreenIcon from './icon--unfullscreen.svg';
 
 import scratchLogo from '../menu-bar/scratch-logo.svg';
@@ -29,6 +30,11 @@ const messages = defineMessages({
         defaultMessage: 'Switch to small stage',
         description: 'Button to change stage size to small',
         id: 'gui.stageHeader.stageSizeSmall'
+    },
+    extraLargeStageSizeMessage: {
+        defaultMessage: 'Switch to extra large stage',
+        description: 'Button to change stage size to extra large',
+        id: 'gui.stageHeader.stageSizeExtraLarge'
     },
     fullStageSizeMessage: {
         defaultMessage: 'Enter full screen mode',
@@ -54,6 +60,7 @@ const StageHeaderComponent = function (props) {
         onKeyPress,
         onSetStageLarge,
         onSetStageSmall,
+        onSetStageExtraLarge,
         onSetStageFull,
         onSetStageUnFull,
         showBranding,
@@ -127,6 +134,13 @@ const StageHeaderComponent = function (props) {
                                 iconClassName: styles.stageButtonIcon,
                                 isSelected: stageSizeMode === STAGE_SIZE_MODES.large,
                                 title: props.intl.formatMessage(messages.largeStageSizeMessage)
+                            },
+                            {
+                                handleClick: onSetStageExtraLarge,
+                                icon: extraLargeStageIcon,
+                                iconClassName: `${styles.stageButtonIcon} ${styles.stageButtonIconPng}`,
+                                isSelected: stageSizeMode === STAGE_SIZE_MODES.extraLarge,
+                                title: props.intl.formatMessage(messages.extraLargeStageSizeMessage)
                             }
                         ]}
                     />
@@ -171,6 +185,7 @@ StageHeaderComponent.propTypes = {
     isFullScreen: PropTypes.bool.isRequired,
     isPlayerOnly: PropTypes.bool.isRequired,
     onKeyPress: PropTypes.func.isRequired,
+    onSetStageExtraLarge: PropTypes.func.isRequired,
     onSetStageFull: PropTypes.func.isRequired,
     onSetStageLarge: PropTypes.func.isRequired,
     onSetStageSmall: PropTypes.func.isRequired,

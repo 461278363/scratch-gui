@@ -73,8 +73,15 @@
 .stage-button-icon {
     width: 100%;
     height: 100%;
+    object-fit: contain;
 }
 
 [dir="rtl"] .stage-button-icon {
     transform: scaleX(-1);
+}
+
+/* PNG 图标需要内边距来和 SVG 图标视觉大小一致 */
+.stage-button-icon-png {
+    padding: 0.15rem;
+    box-sizing: border-box;
 }
