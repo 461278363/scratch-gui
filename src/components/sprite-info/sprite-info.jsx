@@ -104,17 +104,13 @@ class SpriteInfo extends React.Component {
 
         const xPosition = (
             <div className={styles.group}>
-                {
-                    (stageSize === STAGE_DISPLAY_SIZES.large) ?
-                        <div className={styles.iconWrapper}>
-                            <img
-                                aria-hidden="true"
-                                className={classNames(styles.xIcon, styles.icon)}
-                                src={xIcon}
-                            />
-                        </div> :
-                        null
-                }
+                <div className={styles.iconWrapper}>
+                    <img
+                        aria-hidden="true"
+                        className={classNames(styles.xIcon, styles.icon)}
+                        src={xIcon}
+                    />
+                </div>
                 <Label text="x">
                     <BufferedInput
                         small
@@ -131,17 +127,13 @@ class SpriteInfo extends React.Component {
 
         const yPosition = (
             <div className={styles.group}>
-                {
-                    (stageSize === STAGE_DISPLAY_SIZES.large) ?
-                        <div className={styles.iconWrapper}>
-                            <img
-                                aria-hidden="true"
-                                className={classNames(styles.yIcon, styles.icon)}
-                                src={yIcon}
-                            />
-                        </div> :
-                        null
-                }
+                <div className={styles.iconWrapper}>
+                    <img
+                        aria-hidden="true"
+                        className={classNames(styles.yIcon, styles.icon)}
+                        src={yIcon}
+                    />
+                </div>
                 <Label text="y">
                     <BufferedInput
                         small
@@ -156,17 +148,81 @@ class SpriteInfo extends React.Component {
             </div>
         );
 
+        // 小舞台模式：4行布局，每行放较少元素，让面板变高来容纳全部内容
         if (stageSize === STAGE_DISPLAY_SIZES.small) {
             return (
                 <Box className={styles.spriteInfo}>
+                    {/* 第1行：角色名称 */}
                     <div className={classNames(styles.row, styles.rowPrimary)}>
                         <div className={styles.group}>
-                            {spriteNameInput}
+                            <Label
+                                above={labelAbove}
+                                text={sprite}
+                            >
+                                {spriteNameInput}
+                            </Label>
                         </div>
                     </div>
-                    <div className={classNames(styles.row, styles.rowSecondary)}>
+                    {/* 第2行：X坐标 + Y坐标 */}
+                    <div className={classNames(styles.row, styles.rowPrimary)}>
                         {xPosition}
                         {yPosition}
+                    </div>
+                    {/* 第3行：显示/隐藏 + 大小 */}
+                    <div className={classNames(styles.row, styles.rowPrimary)}>
+                        <div className={labelAbove ? styles.column : styles.group}>
+                            <Label
+                                secondary
+                                text={showLabel}
+                            />
+                            <ToggleButtons
+                                buttons={[
+                                    {
+                                        handleClick: this.props.onClickVisible,
+                                        icon: showIcon,
+                                        isSelected: this.props.visible && !this.props.disabled,
+                                        title: this.props.intl.formatMessage(messages.showSpriteAction)
+                                    },
+                                    {
+                                        handleClick: this.props.onClickNotVisible,
+                                        icon: hideIcon,
+                                        isSelected: !this.props.visible && !this.props.disabled,
+                                        title: this.props.intl.formatMessage(messages.hideSpriteAction)
+                                    }
+                                ]}
+                                disabled={this.props.disabled}
+                            />
+                        </div>
+                        <div className={classNames(styles.group, styles.largerInput)}>
+                            <Label
+                                secondary
+                                above={labelAbove}
+                                text={sizeLabel}
+                            >
+                                <BufferedInput
+                                    small
+                                    disabled={this.props.disabled}
+                                    label={sizeLabel}
+                                    tabIndex="0"
+                                    type="text"
+                                    value={this.props.disabled ? '' : Math.round(this.props.size)}
+                                    onSubmit={this.props.onChangeSize}
+                                />
+                            </Label>
+                        </div>
+                    </div>
+                    {/* 第4行：方向选择器 */}
+                    <div className={styles.row}>
+                        <div className={classNames(styles.group, styles.largerInput)}>
+                            <DirectionPicker
+                                direction={Math.round(this.props.direction)}
+                                disabled={this.props.disabled}
+                                labelAbove={labelAbove}
+                                rotationStyle={this.props.rotationStyle}
+                                onChangeDirection={this.props.onChangeDirection}
+                                onChangeRotationStyle={this.props.onChangeRotationStyle}
+                            />
+                        </div>
                     </div>
                 </Box>
             );
@@ -188,14 +244,10 @@ class SpriteInfo extends React.Component {
                 </div>
                 <div className={classNames(styles.row, styles.rowSecondary)}>
                     <div className={labelAbove ? styles.column : styles.group}>
-                        {
-                            stageSize === STAGE_DISPLAY_SIZES.large ?
-                                <Label
-                                    secondary
-                                    text={showLabel}
-                                /> :
-                                null
-                        }
+                        <Label
+                            secondary
+                            text={showLabel}
+                        />
                         <ToggleButtons
                             buttons={[
                                 {

@@ -55,7 +55,7 @@
 
 .tab-list {
     height: $stage-menu-height;
-    width: 250px; /* Match width of the toolbox */
+    width: 250px; /* 需与 blocks.css 中 .blocklyFlyout 宽度保持一致 */
     display: flex;
     align-items: flex-end;
     flex-shrink: 0;
@@ -229,7 +229,7 @@
 }
 
 .extension-button-container {
-    width: 3.75rem;
+    width: 3.75rem; /* 60px，需与 blocks.css 中 .scratchCategoryMenu 宽度保持一致 */
     height: 3.25rem;
     position: absolute;
     bottom: 0;
