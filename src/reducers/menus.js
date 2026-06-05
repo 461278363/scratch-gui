@@ -1,8 +1,11 @@
 const OPEN_MENU = 'scratch-gui/menus/OPEN_MENU';
 const CLOSE_MENU = 'scratch-gui/menus/CLOSE_MENU';
+const SELECT_UI_SIZE = 'scratch-gui/menus/SELECT_UI_SIZE';
+const SELECT_BRIGHT_DARK = 'scratch-gui/menus/SELECT_BRIGHT_DARK';
 
 const MENU_ABOUT = 'aboutMenu';
 const MENU_ACCOUNT = 'accountMenu';
+const MENU_BRIGHT_DARK = 'brightDarkMenu';
 const MENU_EDIT = 'editMenu';
 const MENU_FILE = 'fileMenu';
 const MENU_LANGUAGE = 'languageMenu';
@@ -10,6 +13,7 @@ const MENU_LOGIN = 'loginMenu';
 const MENU_MODE = 'modeMenu';
 const MENU_SETTINGS = 'settingsMenu';
 const MENU_THEME = 'themeMenu';
+const MENU_UI_SIZE = 'uiSizeMenu';
 
 class Menu {
     constructor (id) {
@@ -52,6 +56,8 @@ const rootMenu = new Menu('root')
         new Menu(MENU_SETTINGS)
             .addChild(new Menu(MENU_LANGUAGE))
             .addChild(new Menu(MENU_THEME))
+            .addChild(new Menu(MENU_UI_SIZE))
+            .addChild(new Menu(MENU_BRIGHT_DARK))
     )
     .addChild(new Menu(MENU_FILE))
     .addChild(new Menu(MENU_EDIT))
@@ -64,13 +70,18 @@ const rootMenu = new Menu('root')
 const initialState = {
     [MENU_ABOUT]: false,
     [MENU_ACCOUNT]: false,
+    [MENU_BRIGHT_DARK]: false,
     [MENU_EDIT]: false,
     [MENU_FILE]: false,
     [MENU_LANGUAGE]: false,
     [MENU_LOGIN]: false,
     [MENU_MODE]: false,
     [MENU_SETTINGS]: false,
-    [MENU_THEME]: false
+    [MENU_THEME]: false,
+    [MENU_UI_SIZE]: false,
+    // 当前选中的 UI Size 和 Theme 选项
+    uiSize: 'default',
+    brightDark: 'bright'
 };
 
 const reducer = function (state, action) {
@@ -97,6 +108,10 @@ const reducer = function (state, action) {
             ...Object.fromEntries(toClose.map(({id}) => [id, false]))
         };
     }
+    case SELECT_UI_SIZE:
+        return {...state, uiSize: action.size};
+    case SELECT_BRIGHT_DARK:
+        return {...state, brightDark: action.option};
     default:
         return state;
     }
@@ -117,6 +132,10 @@ const aboutMenuOpen = state => state.scratchGui.menus[MENU_ABOUT];
 const openAccountMenu = () => openMenu(MENU_ACCOUNT);
 const closeAccountMenu = () => closeMenu(MENU_ACCOUNT);
 const accountMenuOpen = state => state.scratchGui.menus[MENU_ACCOUNT];
+
+const openBrightDarkMenu = () => openMenu(MENU_BRIGHT_DARK);
+const closeBrightDarkMenu = () => closeMenu(MENU_BRIGHT_DARK);
+const brightDarkMenuOpen = state => state.scratchGui.menus[MENU_BRIGHT_DARK];
 
 const openEditMenu = () => openMenu(MENU_EDIT);
 const closeEditMenu = () => closeMenu(MENU_EDIT);
@@ -146,6 +165,18 @@ const openThemeMenu = () => openMenu(MENU_THEME);
 const closeThemeMenu = () => closeMenu(MENU_THEME);
 const themeMenuOpen = state => state.scratchGui.menus[MENU_THEME];
 
+const openUISizeMenu = () => openMenu(MENU_UI_SIZE);
+const closeUISizeMenu = () => closeMenu(MENU_UI_SIZE);
+const uiSizeMenuOpen = state => state.scratchGui.menus[MENU_UI_SIZE];
+
+// UI Size 选中状态
+const selectUISize = size => ({type: SELECT_UI_SIZE, size});
+const selectedUISize = state => state.scratchGui.menus.uiSize;
+
+// Bright/Dark Theme 选中状态
+const selectBrightDark = option => ({type: SELECT_BRIGHT_DARK, option});
+const selectedBrightDark = state => state.scratchGui.menus.brightDark;
+
 export {
     reducer as default,
     initialState as menuInitialState,
@@ -155,6 +186,9 @@ export {
     openAccountMenu,
     closeAccountMenu,
     accountMenuOpen,
+    openBrightDarkMenu,
+    closeBrightDarkMenu,
+    brightDarkMenuOpen,
     openEditMenu,
     closeEditMenu,
     editMenuOpen,
@@ -175,5 +209,12 @@ export {
     settingsMenuOpen,
     openThemeMenu,
     closeThemeMenu,
-    themeMenuOpen
+    themeMenuOpen,
+    openUISizeMenu,
+    closeUISizeMenu,
+    uiSizeMenuOpen,
+    selectUISize,
+    selectedUISize,
+    selectBrightDark,
+    selectedBrightDark
 };
