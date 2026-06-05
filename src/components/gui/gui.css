@@ -55,7 +55,7 @@
 
 .tab-list {
     height: $stage-menu-height;
-    width: 250px; /* 需与 blocks.css 中 .blocklyFlyout 宽度保持一致 */
+    width: 250px; /* 积木列表宽度固定，不受 UI Size 控制 */
     display: flex;
     align-items: flex-end;
     flex-shrink: 0;
@@ -229,7 +229,7 @@
 }
 
 .extension-button-container {
-    width: 3.75rem; /* 60px，需与 blocks.css 中 .scratchCategoryMenu 宽度保持一致 */
+    width: var(--category-menu-width, 3.75rem); /* 跟随 UI Size 等比例缩放，需与 blocks.css 一致 */
     height: 3.25rem;
     position: absolute;
     bottom: 0;
@@ -316,4 +316,24 @@ $fade-out-distance: 15px;
 */
 :global(.ReactModal__Body--open) {
     overflow: hidden;
+}
+
+/* ===== UI Size 缩放：覆盖硬编码的 px 值 ===== */
+/* 注：.tab-list / .extension-button-container / .scratchCategoryMenu / .blocklyFlyout 的宽度
+   已改用 CSS 变量（--flyout-width / --category-menu-width），由 gui.jsx 的 applyUISize 统一设置 */
+
+/* 大尺寸 (1.25x) */
+html[data-ui-size="large"] .editor-wrapper {
+    flex-basis: calc(1280px - 510px - (($space + $stage-standard-border-width) * 2));
+}
+html[data-ui-size="large"] .alerts-container {
+    margin-top: 66.25px; /* 53px × 1.25 */
+}
+
+/* 特大尺寸 (1.5x) */
+html[data-ui-size="extraLarge"] .editor-wrapper {
+    flex-basis: calc(1536px - 612px - (($space + $stage-standard-border-width) * 2));
+}
+html[data-ui-size="extraLarge"] .alerts-container {
+    margin-top: 79.5px; /* 53px × 1.5 */
 }

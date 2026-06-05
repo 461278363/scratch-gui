@@ -29,6 +29,7 @@ import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
 import {updateMetrics} from '../reducers/workspace-metrics';
 import {isTimeTravel2020} from '../reducers/time-travel';
+import {selectedUISize} from '../reducers/menus';
 
 import {
     activateTab,
@@ -106,6 +107,11 @@ class Blocks extends React.Component {
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
 
+        // 覆盖 Toolbox.getWidth() 让它返回真实 DOM 宽度
+        // 这样原始的 getMetrics() 会自动计算出正确的 viewWidth、absoluteLeft、contentLeft 等全部值
+        this.patchToolboxGetWidth();
+        this.patchFlyoutPosition();
+
         // Register buttons under new callback keys for creating variables,
         // lists, and procedures from extensions.
 
@@ -126,6 +132,9 @@ class Blocks extends React.Component {
         // the xml can change while e.g. on the costumes tab.
         this._renderedToolboxXML = this.props.toolboxXML;
 
+        // 同步工具箱宽度到 scratch-blocks JS 层（配合 CSS 变量实现动态宽度）
+        this.syncToolboxWidths();
+
         // we actually never want the workspace to enable "refresh toolbox" - this basically re-renders the
         // entire toolbox every time we reset the workspace.  We call updateToolbox as a part of
         // componentDidUpdate so the toolbox will still correctly be updated
@@ -144,6 +153,13 @@ class Blocks extends React.Component {
         if (this.props.isVisible) {
             this.setLocale();
         }
+
+        // 监听 UI Size 变化事件（用自定义事件绕过 shouldComponentUpdate 的阻隔）
+        // shouldComponentUpdate 未包含 uiSize，所以 Redux 驱动不了重渲染
+        this.handleUISizeChange = () => {
+            this.syncToolboxWidths();
+        };
+        window.addEventListener('uiSizeChange', this.handleUISizeChange);
     }
     shouldComponentUpdate (nextProps, nextState) {
         return (
@@ -202,12 +218,98 @@ class Blocks extends React.Component {
 
         // Clear the flyout blocks so that they can be recreated on mount.
         this.props.vm.clearFlyoutBlocks();
+
+        // 清理 UI Size 事件监听
+        window.removeEventListener('uiSizeChange', this.handleUISizeChange);
     }
     requestToolboxUpdate () {
         clearTimeout(this.toolboxUpdateTimeout);
         this.toolboxUpdateTimeout = setTimeout(() => {
             this.updateToolbox();
         }, 0);
+    }
+    // 从 CSS 变量读取当前分类栏宽度。积木列表固定 250px
+    // 返回 { categoryW, flyoutW, toolboxTotal }
+    getUISizeWidths () {
+        const root = document.documentElement;
+        const categoryW = parseFloat(getComputedStyle(root)
+            .getPropertyValue('--category-menu-width')
+            .trim()) || 60;
+        const flyoutW = 250; // 固定值，不受 UI Size 控制
+        return {
+            categoryW,
+            flyoutW,
+            toolboxTotal: categoryW + flyoutW
+        };
+    }
+    // 覆盖 Toolbox.getWidth()，让它返回分类栏 + flyout 的真实总宽度
+    // .blocklyToolboxDiv 只包含分类菜单，flyout 是独立 SVG，所以需要加起来
+    // 这样原始 getMetrics() 链条中所有派生值（viewWidth、absoluteLeft、contentLeft、
+    // contentWidth 等）都会自动使用正确的工具箱总宽度，无需逐个补丁
+    patchToolboxGetWidth () {
+        const toolbox = this.workspace.getToolbox();
+        if (!toolbox || !toolbox.HtmlDiv) return;
+        if (!toolbox._origGetWidth) {
+            toolbox._origGetWidth = toolbox.getWidth.bind(toolbox);
+        }
+        toolbox.getWidth = () => {
+            // 分类栏宽度 = .blocklyToolboxDiv 的 offsetWidth（由 CSS 变量驱动）
+            const categoryW = toolbox.HtmlDiv.offsetWidth;
+            // flyout 宽度固定 250px
+            const flyout = this.workspace.getFlyout();
+            const flyoutW = flyout ? flyout.getWidth() : 250;
+            return categoryW + flyoutW;
+        };
+    }
+    // 覆盖 flyout.position()，修正 flyout 的 X 坐标
+    // flyout 从分类栏右侧开始：X = categoryWidth（即 --category-menu-width）
+    patchFlyoutPosition () {
+        const flyout = this.workspace.getFlyout();
+        if (!flyout || flyout._origPosition) return; // 已覆盖过，不重复
+        flyout._origPosition = flyout.position.bind(flyout);
+        flyout.position = () => {
+            // 先调用原始 position()，让 flyout 完成自身的宽度/高度/背景计算
+            flyout._origPosition();
+            // 然后修正 X 坐标：flyout 紧贴分类栏右侧
+            const {categoryW, flyoutW} = this.getUISizeWidths();
+            if (flyout.svgGroup_) {
+                flyout.svgGroup_.setAttribute('width', flyoutW);
+                this.ScratchBlocks.utils.setCssTransform(
+                    flyout.svgGroup_,
+                    `translate(${categoryW}px, 0px)`
+                );
+            }
+            if (flyout.scrollbar_) {
+                flyout.scrollbar_.setOrigin(categoryW, 0);
+                flyout.scrollbar_.resize();
+            }
+        };
+    }
+    // UI Size 变化时刷新布局
+    // Toolbox.getWidth() 已覆盖为从 DOM 读取真实宽度
+    // 所以 svgResize → resize → getMetrics 链条会得到所有正确值
+    syncToolboxWidths () {
+        // 先更新 flyout 位置（使用 CSS 变量中的分类栏宽度）
+        const flyout = this.workspace.getFlyout();
+        if (flyout) {
+            flyout.width_ = 250;
+            flyout.position();
+        }
+
+        // 完整 resize：flyout.position → scrollbar.resize → getMetrics(正确的width) → cache更新
+        if (this.ScratchBlocks && this.ScratchBlocks.svgResize) {
+            this.ScratchBlocks.svgResize(this.workspace);
+        } else {
+            this.workspace.resize();
+        }
+
+        // resize 后需要手动调 translate（resize 不会自动调）
+        this.workspace.scrollX = this.workspace.scrollX || 0;
+        this.workspace.scrollY = this.workspace.scrollY || 0;
+        this.workspace.translate(
+            this.workspace.scrollX + this.workspace.getToolbox().getWidth(),
+            this.workspace.scrollY
+        );
     }
     setLocale () {
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
@@ -642,6 +744,7 @@ Blocks.propTypes = {
     updateMetrics: PropTypes.func,
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
+    uiSize: PropTypes.string,
     vm: PropTypes.instanceOf(VM).isRequired,
     workspaceMetrics: PropTypes.shape({
         targets: PropTypes.objectOf(PropTypes.object)
@@ -682,7 +785,8 @@ const mapStateToProps = state => ({
     toolboxXML: state.scratchGui.toolbox.toolboxXML,
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
-    useCatBlocks: isTimeTravel2020(state)
+    useCatBlocks: isTimeTravel2020(state),
+    uiSize: selectedUISize(state)
 });
 
 const mapDispatchToProps = dispatch => ({

@@ -55,9 +55,9 @@
     -ms-overflow-style: none;
 }
 
-/* 分类菜单宽度 - 通过CSS覆盖控制，默认60px */
+/* 分类菜单宽度 - 通过 CSS 变量控制，跟随 UI Size 等比例缩放，默认60px */
 .blocks :global(.scratchCategoryMenu) {
-    width: 60px;
+    width: var(--category-menu-width, 60px);
 }
 
 [dir="rtl"] .blocks :global(.blocklyToolboxDiv) {
@@ -72,7 +72,7 @@
 .blocks :global(.blocklyFlyout) {
     border-right: 1px solid $ui-black-transparent;
     box-sizing: content-box;
-    width: 250px; /* 积木列表宽度 - 通过CSS覆盖控制，默认250px */
+    width: 250px; /* 积木列表宽度固定，不受 UI Size 控制 */
 }
 
 [dir="rtl"] .blocks :global(.blocklyFlyout) {

@@ -41,6 +41,7 @@ import systemPreferencesHOC from '../lib/system-preferences-hoc.jsx';
 
 import GUIComponent from '../components/gui/gui.jsx';
 import {setIsScratchDesktop} from '../lib/isScratchDesktop.js';
+import {selectedUISize} from '../reducers/menus.js';
 
 const {RequestMetadata, setMetadata, unsetMetadata} = storage.scratchFetch;
 
@@ -60,6 +61,7 @@ class GUI extends React.Component {
         this.props.onStorageInit(storage);
         this.props.onVmInit(this.props.vm);
         setProjectIdMetadata(this.props.projectId);
+        this.applyUISize(this.props.uiSize);
     }
     componentDidUpdate (prevProps) {
         if (this.props.projectId !== prevProps.projectId) {
@@ -76,6 +78,33 @@ class GUI extends React.Component {
         if (this.props.shouldStopProject && !prevProps.shouldStopProject) {
             this.props.vm.stopAll();
         }
+        if (this.props.uiSize !== prevProps.uiSize) {
+            this.applyUISize(this.props.uiSize);
+        }
+    }
+    // 根据用户选择的 UI Size 设置根元素字体大小 + 分类栏宽度
+    applyUISize (uiSize) {
+        const fontSizeMap = {
+            default: '16px', // 默认 1.0 倍
+            large: '20px', // 1.25 倍
+            extraLarge: '24px' // 1.5 倍
+        };
+        // 分类栏宽度（60px基准，等比例缩放。积木列表固定 250px，不受 UI Size 控制）
+        const categoryWidthMap = {
+            default: '60px', // 60 × 1.0
+            large: '75px', // 60 × 1.25
+            extraLarge: '90px' // 60 × 1.5
+        };
+        const root = document.documentElement;
+        root.style.fontSize = fontSizeMap[uiSize] || '16px';
+        root.dataset.uiSize = uiSize;
+        // 只设置分类栏宽度的 CSS 变量（积木列表保持固定 250px）
+        root.style.setProperty('--category-menu-width', categoryWidthMap[uiSize] || '60px');
+        // 发送自定义事件，通知 blocks 容器立即更新 flyout 位置
+        // 用事件而非 Redux props 传播，绕过 React 渲染链路的时序问题
+        setTimeout(() => {
+            window.dispatchEvent(new CustomEvent('uiSizeChange'));
+        }, 0);
     }
     render () {
         if (this.props.isError) {
@@ -136,6 +165,7 @@ GUI.propTypes = {
     projectId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     shouldStopProject: PropTypes.bool,
     telemetryModalVisible: PropTypes.bool,
+    uiSize: PropTypes.string,
     vm: PropTypes.instanceOf(VM).isRequired
 };
 
@@ -175,6 +205,7 @@ const mapStateToProps = state => {
         ),
         telemetryModalVisible: state.scratchGui.modals.telemetryModal,
         tipsLibraryVisible: state.scratchGui.modals.tipsLibrary,
+        uiSize: selectedUISize(state),
         vm: state.scratchGui.vm
     };
 };

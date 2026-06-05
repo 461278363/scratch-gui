@@ -13,3 +13,17 @@ body,
 
 /* @todo: move globally? Safe / side FX, for blocks particularly? */
 * { box-sizing: border-box; }
+
+/* ===== UI Size 缩放：覆盖硬编码的 px 值 ===== */
+
+/* 大尺寸 (1.25x)：min-width 1024→1280, min-height 640→800 */
+html[data-ui-size="large"] .app {
+    min-width: 1280px;
+    min-height: 800px;
+}
+
+/* 特大尺寸 (1.5x)：min-width 1024→1536, min-height 640→960 */
+html[data-ui-size="extraLarge"] .app {
+    min-width: 1536px;
+    min-height: 960px;
+}

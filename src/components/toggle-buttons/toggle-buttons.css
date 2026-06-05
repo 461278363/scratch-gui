@@ -14,8 +14,8 @@
     cursor: pointer;
     user-select: none;
     position: relative;
-    width: 34px;
-    height: 34px;
+    width: 2.125rem;  /* 34px / 16px，使用 rem 跟随 UI Size 缩放 */
+    height: 2.125rem;
     display: flex;
     justify-content: center;
     align-items: center;
