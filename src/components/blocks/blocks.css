@@ -72,7 +72,7 @@
 .blocks :global(.blocklyFlyout) {
     border-right: 1px solid $ui-black-transparent;
     box-sizing: content-box;
-    width: 250px; /* 积木列表宽度固定，不受 UI Size 控制 */
+    width: var(--flyout-width, 250px); /* 积木列表宽度，跟随 UI Size 变化 */
 }
 
 [dir="rtl"] .blocks :global(.blocklyFlyout) {

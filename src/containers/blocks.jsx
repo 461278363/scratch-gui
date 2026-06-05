@@ -14,7 +14,7 @@ import ExtensionLibrary from './extension-library.jsx';
 import extensionData from '../lib/libraries/extensions/index.jsx';
 import CustomProcedures from './custom-procedures.jsx';
 import errorBoundaryHOC from '../lib/error-boundary-hoc.jsx';
-import {BLOCKS_DEFAULT_SCALE, STAGE_DISPLAY_SIZES} from '../lib/layout-constants';
+import {BLOCKS_DEFAULT_SCALE, STAGE_DISPLAY_SIZES, getFlyoutWidth} from '../lib/layout-constants';
 import DropAreaHOC from '../lib/drop-area-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
@@ -100,12 +100,30 @@ class Blocks extends React.Component {
         this.ScratchBlocks.Procedures.externalProcedureDefCallback = this.props.onActivateCustomProcedures;
         this.ScratchBlocks.ScratchMsgs.setLocale(this.props.locale);
 
+        // 初始化 flyout 宽度 CSS 变量
+        document.documentElement.style.setProperty('--flyout-width', `${getFlyoutWidth(this.props.uiSize)}px`);
+
+        const uiScale = BLOCKS_DEFAULT_SCALE(this.props.uiSize);
         const workspaceConfig = defaultsDeep({},
             Blocks.defaultOptions,
             this.props.options,
-            {rtl: this.props.isRtl, toolbox: this.props.toolboxXML, colours: getColorsForTheme(this.props.theme)}
+            {
+                rtl: this.props.isRtl,
+                toolbox: this.props.toolboxXML,
+                colours: getColorsForTheme(this.props.theme),
+                zoom: { startScale: uiScale }
+            }
         );
         this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+
+        // 设置主工作区缩放（setScale 只改主画布，不影响工具箱 flyout 的积木大小）
+        this.workspace.setScale(uiScale);
+
+        // 覆盖 flyout 的 DEFAULT_WIDTH，使积木列表宽度跟随 UI Size
+        const flyout = this.workspace.getFlyout();
+        if (flyout) {
+            flyout.DEFAULT_WIDTH = getFlyoutWidth(this.props.uiSize);
+        }
 
         // 覆盖 Toolbox.getWidth() 让它返回真实 DOM 宽度
         // 这样原始的 getMetrics() 会自动计算出正确的 viewWidth、absoluteLeft、contentLeft 等全部值
@@ -157,6 +175,22 @@ class Blocks extends React.Component {
         // 监听 UI Size 变化事件（用自定义事件绕过 shouldComponentUpdate 的阻隔）
         // shouldComponentUpdate 未包含 uiSize，所以 Redux 驱动不了重渲染
         this.handleUISizeChange = () => {
+            const flyoutWidth = getFlyoutWidth(this.props.uiSize);
+            const newScale = BLOCKS_DEFAULT_SCALE(this.props.uiSize);
+
+            // ① 更新 CSS 变量，让 .blocklyFlyout 容器宽度变化
+            document.documentElement.style.setProperty('--flyout-width', `${flyoutWidth}px`);
+
+            // ② 更新主工作区缩放 + flyout 内部状态
+            this.workspace.setScale(newScale);
+            const flyout = this.workspace.getFlyout();
+            if (flyout) {
+                flyout.DEFAULT_WIDTH = flyoutWidth;
+                flyout.getWorkspace().scale = newScale;
+                flyout.reflow();
+            }
+
+            // ③ 最后做完整布局刷新（内部调 flyout.position + svgResize，此时所有值已就绪）
             this.syncToolboxWidths();
         };
         window.addEventListener('uiSizeChange', this.handleUISizeChange);
@@ -228,14 +262,14 @@ class Blocks extends React.Component {
             this.updateToolbox();
         }, 0);
     }
-    // 从 CSS 变量读取当前分类栏宽度。积木列表固定 250px
+    // 从 CSS 变量读取当前分类栏宽度
     // 返回 { categoryW, flyoutW, toolboxTotal }
     getUISizeWidths () {
         const root = document.documentElement;
         const categoryW = parseFloat(getComputedStyle(root)
             .getPropertyValue('--category-menu-width')
             .trim()) || 60;
-        const flyoutW = 250; // 固定值，不受 UI Size 控制
+        const flyoutW = getFlyoutWidth(this.props.uiSize);
         return {
             categoryW,
             flyoutW,
@@ -255,9 +289,9 @@ class Blocks extends React.Component {
         toolbox.getWidth = () => {
             // 分类栏宽度 = .blocklyToolboxDiv 的 offsetWidth（由 CSS 变量驱动）
             const categoryW = toolbox.HtmlDiv.offsetWidth;
-            // flyout 宽度固定 250px
+            // flyout 宽度根据 UI Size 动态计算
             const flyout = this.workspace.getFlyout();
-            const flyoutW = flyout ? flyout.getWidth() : 250;
+            const flyoutW = flyout ? flyout.getWidth() : getFlyoutWidth(this.props.uiSize);
             return categoryW + flyoutW;
         };
     }
@@ -292,7 +326,7 @@ class Blocks extends React.Component {
         // 先更新 flyout 位置（使用 CSS 变量中的分类栏宽度）
         const flyout = this.workspace.getFlyout();
         if (flyout) {
-            flyout.width_ = 250;
+            flyout.DEFAULT_WIDTH = getFlyoutWidth(this.props.uiSize);
             flyout.position();
         }
 
@@ -505,11 +539,15 @@ class Blocks extends React.Component {
         this.workspace.addChangeListener(this.props.vm.blockListener);
 
         if (this.props.vm.editingTarget && this.props.workspaceMetrics.targets[this.props.vm.editingTarget.id]) {
+            // 有保存的滚动/缩放记录 → 恢复上次的位置
             const {scrollX, scrollY, scale} = this.props.workspaceMetrics.targets[this.props.vm.editingTarget.id];
             this.workspace.scrollX = scrollX;
             this.workspace.scrollY = scrollY;
             this.workspace.scale = scale;
             this.workspace.resize();
+        } else {
+            // 首次加载，没有保存的滚动记录 → 居中显示积木画布
+            this.workspace.scrollCenter();
         }
 
         // Clear the undo state of the workspace since this is a
@@ -755,7 +793,7 @@ Blocks.defaultOptions = {
     zoom: {
         controls: true,
         wheel: true,
-        startScale: BLOCKS_DEFAULT_SCALE
+        startScale: BLOCKS_DEFAULT_SCALE('default')
     },
     grid: {
         spacing: 40,

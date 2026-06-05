@@ -12,6 +12,7 @@ import {activateTab, COSTUMES_TAB_INDEX, BLOCKS_TAB_INDEX} from '../reducers/edi
 import {setReceivedBlocks} from '../reducers/hovered-target';
 import {showStandardAlert, closeAlertWithId} from '../reducers/alerts';
 import {setRestore} from '../reducers/restore-deletion';
+import {selectedUISize} from '../reducers/menus';
 import DragConstants from '../lib/drag-constants';
 import TargetPaneComponent from '../components/target-pane/target-pane.jsx';
 import {BLOCKS_DEFAULT_SCALE} from '../lib/layout-constants';
@@ -172,7 +173,7 @@ class TargetPane extends React.Component {
                 metrics = {
                     scrollX: 0,
                     scrollY: 0,
-                    scale: BLOCKS_DEFAULT_SCALE
+                    scale: BLOCKS_DEFAULT_SCALE(this.props.uiSize)
                 };
             }
 
@@ -294,7 +295,8 @@ const mapStateToProps = state => ({
     sprites: state.scratchGui.targets.sprites,
     stage: state.scratchGui.targets.stage,
     raiseSprites: state.scratchGui.blockDrag,
-    workspaceMetrics: state.scratchGui.workspaceMetrics
+    workspaceMetrics: state.scratchGui.workspaceMetrics,
+    uiSize: selectedUISize(state)
 });
 
 const mapDispatchToProps = dispatch => ({

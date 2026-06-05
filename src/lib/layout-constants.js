@@ -47,8 +47,29 @@ const STAGE_DISPLAY_SIZES = keyMirror({
     extraLarge: null
 });
 
-// zoom level to start with
-const BLOCKS_DEFAULT_SCALE = 0.675;
+// 积木默认缩放比例（根据 UI Size 动态计算）
+// @param {string} uiSize - 'default' | 'large' | 'extraLarge'
+// @returns {number} 缩放比例
+const BLOCKS_DEFAULT_SCALE = uiSize => {
+    const scales = {
+        default: 0.675,
+        large: 0.85,
+        extraLarge: 1.0
+    };
+    return scales[uiSize] || 0.675;
+};
+
+// 工具箱积木列表（flyout）宽度（根据 UI Size 动态计算）
+// @param {string} uiSize - 'default' | 'large' | 'extraLarge'
+// @returns {number} 宽度（px）
+const getFlyoutWidth = uiSize => {
+    const widths = {
+        default: 250,
+        large: 290,
+        extraLarge: 340
+    };
+    return widths[uiSize] || 250;
+};
 
 const STAGE_DISPLAY_SCALES = {};
 STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.large] = 1; // large mode, wide browser (standard)
@@ -65,6 +86,7 @@ export default {
 
 export {
     BLOCKS_DEFAULT_SCALE,
+    getFlyoutWidth,
     STAGE_DISPLAY_SCALES,
     STAGE_DISPLAY_SIZES,
     STAGE_SIZE_MODES
