@@ -31,6 +31,7 @@ const SettingsMenu = ({
         onMouseUp={onRequestOpen}
     >
         <img
+            className={menuBarStyles.menuIcon}
             src={settingsIcon}
         />
         <span className={styles.dropdownLabel}>
@@ -40,7 +41,10 @@ const SettingsMenu = ({
                 id="gui.menuBar.settings"
             />
         </span>
-        <img src={dropdownCaret} />
+        <img
+            className={menuBarStyles.dropdownCaretIcon}
+            src={dropdownCaret}
+        />
         <MenuBarMenu
             className={menuBarStyles.menuBarMenu}
             open={settingsMenuOpen}

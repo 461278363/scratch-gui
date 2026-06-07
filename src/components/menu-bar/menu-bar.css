@@ -158,6 +158,11 @@
 
 .help-icon {
     margin: 0 .25rem 0 0;
+    height: 1.25rem;
+}
+
+.menu-icon {
+    height: 1.25rem;
 }
 
 [dir="rtl"] .help-icon {

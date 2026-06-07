@@ -168,12 +168,12 @@ html[data-ui-size="extraLarge"] .blocks :global(.blocklyZoom image) {
 }
 /* 积木列表外层（容器，调透明度可透出画布） */
 [data-theme="dark"] .blocks :global(.blocklyFlyout) {
-    background-color: rgba(18, 18, 18, 0.2) !important;
+    background-color: rgba(18, 18, 18, 0.5) !important;
 }
 /* 积木列表内层（SVG背景矩形，fill-opacity=1全不透明 0全透明） */
 [data-theme="dark"] .blocks :global(.blocklyFlyoutBackground) {
     fill: #121212 !important;
-    fill-opacity: 0.2 !important;
+    fill-opacity: 0.5 !important;
 }
 /* 网格点颜色和透明度 */
 [data-theme="dark"] .blocks :global(pattern[id^="blocklyGridPattern"]) line {

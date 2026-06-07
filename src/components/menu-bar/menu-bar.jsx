@@ -457,7 +457,10 @@ class MenuBar extends React.Component {
                                 })}
                                 onMouseUp={this.props.onClickFile}
                             >
-                                <img src={fileIcon} />
+                                <img
+                                    className={styles.menuIcon}
+                                    src={fileIcon}
+                                />
                                 <span className={styles.collapsibleLabel}>
                                     <FormattedMessage
                                         defaultMessage="File"
@@ -465,7 +468,10 @@ class MenuBar extends React.Component {
                                         id="gui.menuBar.file"
                                     />
                                 </span>
-                                <img src={dropdownCaret} />
+                                <img
+                                    className={styles.dropdownCaretIcon}
+                                    src={dropdownCaret}
+                                />
                                 <MenuBarMenu
                                     className={classNames(styles.menuBarMenu)}
                                     open={this.props.fileMenuOpen}
@@ -527,7 +533,10 @@ class MenuBar extends React.Component {
                             })}
                             onMouseUp={this.props.onClickEdit}
                         >
-                            <img src={editIcon} />
+                            <img
+                                className={styles.menuIcon}
+                                src={editIcon}
+                            />
                             <span className={styles.collapsibleLabel}>
                                 <FormattedMessage
                                     defaultMessage="Edit"
@@ -535,7 +544,10 @@ class MenuBar extends React.Component {
                                     id="gui.menuBar.edit"
                                 />
                             </span>
-                            <img src={dropdownCaret} />
+                            <img
+                                className={styles.dropdownCaretIcon}
+                                src={dropdownCaret}
+                            />
                             <MenuBarMenu
                                 className={classNames(styles.menuBarMenu)}
                                 open={this.props.editMenuOpen}

@@ -1,4 +1,4 @@
-import {ScratchStorage} from 'scratch-storage';
+import {ScratchStorage, Asset} from 'scratch-storage';
 
 import defaultProject from './default-project';
 
@@ -10,6 +10,39 @@ class Storage extends ScratchStorage {
     constructor () {
         super();
         this.cacheDefaultProject();
+
+        // 绕过 FetchWorkerTool（Web Worker），直接使用主线程 fetch
+        // 原因：FetchWorkerTool 发出的请求可能挂起且永不超时，
+        // 导致 ProxyTool 无法降级到 FetchTool，整个 addSprite 流程卡死
+        this.load = async (assetType, assetId, dataFormat) => {
+            const builtinResult = this.builtinHelper.get(assetId);
+            if (builtinResult) {
+                return builtinResult;
+            }
+
+            const fetchUrl = this.getAssetGetConfig({assetId, dataFormat});
+
+            try {
+                const response = await Promise.race([
+                    fetch(fetchUrl),
+                    new Promise((_, reject) =>
+                        setTimeout(() => reject(new Error('请求超时')), 15000)
+                    )
+                ]);
+
+                if (!response.ok) {
+                    if (response.status === 404) return null;
+                    throw new Error(`HTTP ${response.status}`);
+                }
+
+                const buffer = await response.arrayBuffer();
+                const result = new Asset(assetType, assetId, dataFormat);
+                result.setData(new Uint8Array(buffer), dataFormat);
+                return result;
+            } catch (err) {
+                return null;
+            }
+        };
     }
     addOfficialScratchWebStores () {
         this.addWebStore(
