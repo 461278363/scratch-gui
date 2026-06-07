@@ -16,6 +16,7 @@ import {
 import styles from './settings-menu.css';
 
 import dropdownCaret from './dropdown-caret.svg';
+import uiSizeIcon from './icon--ui-size.png';
 
 // UI Size 的三个选项
 const UI_SIZE_OPTIONS = [
@@ -60,6 +61,10 @@ const UISizeMenu = ({
             // eslint-disable-next-line react/jsx-no-bind
             onMouseUp={e => e.stopPropagation()}
         >
+            <img
+                className={styles.icon}
+                src={uiSizeIcon}
+            />
             <span className={styles.submenuLabel}>
                 <FormattedMessage
                     defaultMessage="UI Size"
@@ -114,7 +119,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onRequestOpen: () => dispatch(openUISizeMenu()),
-    onSelect: size => dispatch(selectUISize(size))
+    onSelect: size => {
+        dispatch(selectUISize(size));
+        // 持久化 UI Size 选择到 localStorage，刷新后保留
+        localStorage.setItem('scratchUISize', size);
+    }
 });
 
 export default connect(

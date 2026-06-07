@@ -80,7 +80,7 @@ const initialState = {
     [MENU_THEME]: false,
     [MENU_UI_SIZE]: false,
     // 当前选中的 UI Size 和 Theme 选项
-    uiSize: 'default',
+    uiSize: typeof localStorage !== 'undefined' ? (localStorage.getItem('scratchUISize') || 'default') : 'default',
     brightDark: typeof localStorage !== 'undefined' ? (localStorage.getItem('scratchBrightDark') || 'bright') : 'bright'
 };
 

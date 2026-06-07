@@ -105,6 +105,25 @@ class Blocks extends React.Component {
             svg.style.backgroundColor = isDark ? '#121212' : '';
         }
     }
+    // 给缩放按钮（放大/缩小/重置）添加悬停提示文字
+    // scratch-blocks 使用预构建的 dist 文件，无法修改其源码，只能在 workspace 创建后动态注入
+    enhanceZoomButtons () {
+        if (!this.workspace || !this.workspace.zoomControls_) return;
+        const svgGroup = this.workspace.zoomControls_.svgGroup_;
+        if (!svgGroup) return;
+
+        const images = svgGroup.querySelectorAll('image');
+        // createDom() 中的创建顺序：缩小 → 放大 → 重置居中
+        const tooltips = ['缩小（Ctrl+滚轮↓）', '放大（Ctrl+滚轮↑）', '重置居中'];
+
+        images.forEach((img, i) => {
+            if (i < tooltips.length && !img.querySelector('title')) {
+                const title = document.createElementNS('http://www.w3.org/2000/svg', 'title');
+                title.textContent = tooltips[i];
+                img.appendChild(title);
+            }
+        });
+    }
     // 销毁旧工作区并用新主题颜色完整重建
     // ScratchBlocks 在 inject() 时将 Blockly.Colours 烘焙到动态生成的 CSS 中，
     // 仅修改 Blockly.Colours 无法更新分类栏背景、flyout 颜色等，必须完整重建工作区
@@ -142,10 +161,12 @@ class Blocks extends React.Component {
             // ⑤ 设置主工作区缩放
             this.workspace.setScale(uiScale);
 
-            // ⑥ 覆盖 flyout 宽度
+            // ⑥ 覆盖 flyout 宽度，并设置 flyout 内积木的缩放（与大工作区一致）
             const flyout = this.workspace.getFlyout();
             if (flyout) {
                 flyout.DEFAULT_WIDTH = getFlyoutWidth(this.props.uiSize);
+                flyout.getWorkspace().scale = uiScale;
+                flyout.reflow();
             }
 
             // ⑦ 覆盖 Toolbox.getWidth() 和 flyout.position()
@@ -184,6 +205,9 @@ class Blocks extends React.Component {
             // ⑬ 更新工作区背景色
             this.updateWorkspaceBackground();
 
+            // 给缩放按钮添加悬停提示
+            this.enhanceZoomButtons();
+
             // ⑭ 从 VM 运行时重新加载全部积木（同时触发 toolbox XML 更新）
             this.props.vm.refreshWorkspace();
         } finally {
@@ -219,10 +243,12 @@ class Blocks extends React.Component {
         // 设置主工作区缩放（setScale 只改主画布，不影响工具箱 flyout 的积木大小）
         this.workspace.setScale(uiScale);
 
-        // 覆盖 flyout 的 DEFAULT_WIDTH，使积木列表宽度跟随 UI Size
+        // 覆盖 flyout 的 DEFAULT_WIDTH 和积木缩放，使积木列表大小跟随 UI Size
         const flyout = this.workspace.getFlyout();
         if (flyout) {
             flyout.DEFAULT_WIDTH = getFlyoutWidth(this.props.uiSize);
+            flyout.getWorkspace().scale = uiScale;
+            flyout.reflow();
         }
 
         // 覆盖 Toolbox.getWidth() 让它返回真实 DOM 宽度
@@ -268,6 +294,10 @@ class Blocks extends React.Component {
         this.attachVM();
         // 初始化工作区背景色
         this.updateWorkspaceBackground();
+
+        // 给缩放按钮添加悬停提示
+        this.enhanceZoomButtons();
+
         // Only update blocks/vm locale when visible to avoid sizing issues
         // If locale changes while not visible it will get handled in didUpdate
         if (this.props.isVisible) {

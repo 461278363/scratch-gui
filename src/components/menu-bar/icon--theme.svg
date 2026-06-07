@@ -1,0 +1,13 @@
+<svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- 弱化分割斜线 -->
+  <line x1="3" y1="17" x2="17" y2="3" stroke="white" stroke-width="0.5" stroke-linecap="round" opacity="0.3"/>
+  <!-- 左上：太阳（实心圆 + 光线） -->
+  <circle cx="5" cy="5" r="3.5" fill="white" opacity="0.85"/>
+  <!-- 太阳光线 -->
+  <line x1="5" y1="0.5" x2="5" y2="1.2" stroke="white" stroke-width="1" stroke-linecap="round"/>
+  <line x1="5" y1="8.8" x2="5" y2="9.5" stroke="white" stroke-width="1" stroke-linecap="round"/>
+  <line x1="0.5" y1="5" x2="1.2" y2="5" stroke="white" stroke-width="1" stroke-linecap="round"/>
+  <line x1="8.8" y1="5" x2="9.5" y2="5" stroke="white" stroke-width="1" stroke-linecap="round"/>
+  <!-- 右下：月亮（实心月牙） -->
+  <path d="M15.5 11a4.5 4.5 0 1 1 3-8.3" stroke="white" stroke-width="2" stroke-linecap="round" fill="none" opacity="0.85"/>
+</svg>

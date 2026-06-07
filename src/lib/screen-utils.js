@@ -32,10 +32,7 @@ const resolveStageSize = (stageSizeMode, isFullSize) => {
     if (stageSizeMode === STAGE_SIZE_MODES.extraLarge) {
         return STAGE_DISPLAY_SIZES.extraLarge;
     }
-    if (isFullSize) {
-        return STAGE_DISPLAY_SIZES.large;
-    }
-    return STAGE_DISPLAY_SIZES.largeConstrained;
+    return STAGE_DISPLAY_SIZES.large;
 };
 
 /**

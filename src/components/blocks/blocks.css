@@ -104,6 +104,20 @@
     min-height: auto;
 }
 
+/* ===== 缩放按钮的悬停和点击效果 ===== */
+.blocks :global(.blocklyZoom image) {
+    cursor: pointer;
+    transition: opacity 0.15s ease, filter 0.15s ease;
+}
+.blocks :global(.blocklyZoom image:hover) {
+    opacity: 0.75;
+    filter: brightness(1.2);
+}
+.blocks :global(.blocklyZoom image:active) {
+    opacity: 0.5;
+    filter: brightness(0.9);
+}
+
 /* ===== 暗色主题 — 积木区环境颜色 ===== */
 /* 积木编辑区域背景 */
 [data-theme="dark"] .blocks :global(.blocklySvg) {

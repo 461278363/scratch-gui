@@ -16,11 +16,15 @@ import {
 import styles from './settings-menu.css';
 
 import dropdownCaret from './dropdown-caret.svg';
+import themeIcon from './icon--theme.png';
+import brightIcon from './icon--bright.png';
+import darkIcon from './icon--dark.png';
 
 // Theme 的两个选项
 const THEME_OPTIONS = [
     {
         key: 'bright',
+        icon: brightIcon,
         label: {
             defaultMessage: 'Bright',
             description: 'Bright theme option',
@@ -29,6 +33,7 @@ const THEME_OPTIONS = [
     },
     {
         key: 'dark',
+        icon: darkIcon,
         label: {
             defaultMessage: 'Dark',
             description: 'Dark theme option',
@@ -52,6 +57,10 @@ const BrightDarkMenu = ({
             // eslint-disable-next-line react/jsx-no-bind
             onMouseUp={e => e.stopPropagation()}
         >
+            <img
+                className={styles.icon}
+                src={themeIcon}
+            />
             <span className={styles.submenuLabel}>
                 <FormattedMessage
                     defaultMessage="Theme"
@@ -80,6 +89,10 @@ const BrightDarkMenu = ({
                                 [styles.selected]: selected === option.key
                             })}
                             src={check}
+                        />
+                        <img
+                            className={styles.icon}
+                            src={option.icon}
                         />
                         <FormattedMessage {...option.label} />
                     </div>

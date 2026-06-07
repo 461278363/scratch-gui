@@ -32,11 +32,6 @@ const STAGE_DISPLAY_SIZES = keyMirror({
     large: null,
 
     /**
-     * Large stage with narrow browser
-     */
-    largeConstrained: null,
-
-    /**
      * Small stage (ignores browser width)
      */
     small: null,
@@ -72,9 +67,8 @@ const getFlyoutWidth = uiSize => {
 };
 
 const STAGE_DISPLAY_SCALES = {};
-STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.large] = 1; // large mode, wide browser (standard)
-STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.largeConstrained] = 0.85; // large mode but narrow browser
-STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.small] = 0.5; // small mode, regardless of browser size
+STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.large] = 1; // large mode (standard)
+STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.small] = 0.65; // small mode, regardless of browser size
 STAGE_DISPLAY_SCALES[STAGE_DISPLAY_SIZES.extraLarge] = 1.5; // extra large mode (972×729)
 
 export default {
