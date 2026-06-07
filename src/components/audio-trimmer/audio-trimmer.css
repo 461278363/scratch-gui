@@ -28,20 +28,20 @@ $hover-scale: 1.25;
 }
 
 .trim-background-mask {
-    border: 1px solid $red-tertiary;
+    border: 1px solid var(--red-tertiary, #E64D00);
     opacity: 0.5;
 
     background: repeating-linear-gradient(
         45deg,
-        $red-primary,
-        $red-primary $stripe-size,
-        $red-tertiary $stripe-size,
-        $red-tertiary calc(2 * $stripe-size)
+        var(--red-primary, #FF661A),
+        var(--red-primary, #FF661A) $stripe-size,
+        var(--red-tertiary, #E64D00) $stripe-size,
+        var(--red-tertiary, #E64D00) calc(2 * $stripe-size)
     );
 }
 
 .selection-background {
-    background: $looks-secondary;
+    background: var(--looks-secondary, #855CD6);
     opacity: 0.5;
 }
 
@@ -60,11 +60,11 @@ $hover-scale: 1.25;
     top: 0;
     width: 0px;
     height: 100%;
-    border: 1px solid $red-tertiary;
+    border: 1px solid var(--red-tertiary, #E64D00);
 }
 
 .selector .trim-line {
-    border: 1px solid $looks-secondary;
+    border: 1px solid var(--looks-secondary, #855CD6);
 }
 
 .playhead-container {
@@ -83,7 +83,7 @@ $hover-scale: 1.25;
     */
     width: 100%;
     height: 100%;
-    border-left: 1px solid $looks-secondary;
+    border-left: 1px solid var(--looks-secondary, #855CD6);
     border-top: none;
     border-bottom: none;
     border-right: none;

@@ -18,7 +18,7 @@ import {BLOCKS_DEFAULT_SCALE, STAGE_DISPLAY_SIZES, getFlyoutWidth} from '../lib/
 import DropAreaHOC from '../lib/drop-area-hoc.jsx';
 import DragConstants from '../lib/drag-constants';
 import defineDynamicBlock from '../lib/define-dynamic-block';
-import {DEFAULT_THEME, getColorsForTheme, themeMap} from '../lib/themes';
+import {DEFAULT_THEME, DARK_THEME, getColorsForTheme, themeMap} from '../lib/themes';
 import {injectExtensionBlockTheme, injectExtensionCategoryTheme} from '../lib/themes/blockHelpers';
 
 import {connect} from 'react-redux';
@@ -29,7 +29,7 @@ import {activateCustomProcedures, deactivateCustomProcedures} from '../reducers/
 import {setConnectionModalExtensionId} from '../reducers/connection-modal';
 import {updateMetrics} from '../reducers/workspace-metrics';
 import {isTimeTravel2020} from '../reducers/time-travel';
-import {selectedUISize} from '../reducers/menus';
+import {selectedUISize, selectedBrightDark} from '../reducers/menus';
 
 import {
     activateTab,
@@ -90,6 +90,106 @@ class Blocks extends React.Component {
         this.onTargetsUpdate = debounce(this.onTargetsUpdate, 100);
         this.toolboxUpdateQueue = [];
     }
+    // 获取当前生效的主题：如果用户选择了 Dark UI 主题，则积木区也使用暗色积木颜色
+    getEffectiveTheme () {
+        return this.props.brightDark === 'dark' ? DARK_THEME : this.props.theme;
+    }
+    // 更新工作区背景色（暗色/亮色切换时调用）
+    // 注意：不能改 .blocklyMainBackground 的 fill（它是 gridPattern 网格图案），
+    // 否则网格点会被纯色覆盖。靠 .blocklySvg 的 CSS background-color 提供暗色背景。
+    updateWorkspaceBackground () {
+        if (!this.workspace) return;
+        const isDark = this.props.brightDark === 'dark';
+        const svg = this.workspace.getParentSvg();
+        if (svg) {
+            svg.style.backgroundColor = isDark ? '#121212' : '';
+        }
+    }
+    // 销毁旧工作区并用新主题颜色完整重建
+    // ScratchBlocks 在 inject() 时将 Blockly.Colours 烘焙到动态生成的 CSS 中，
+    // 仅修改 Blockly.Colours 无法更新分类栏背景、flyout 颜色等，必须完整重建工作区
+    reinitializeWorkspace () {
+        // 防止重入
+        if (this._isReinitializing) return;
+        this._isReinitializing = true;
+
+        try {
+            // ① 分离 VM 事件监听（避免 dispose 时触发多余回调）
+            this.detachVM();
+
+            // ② 销毁旧工作区
+            this.workspace.dispose();
+
+            // ③ 清空 DOM 容器
+            while (this.blocks && this.blocks.firstChild) {
+                this.blocks.removeChild(this.blocks.firstChild);
+            }
+
+            // ④ 用新主题颜色重新注入工作区
+            const uiScale = BLOCKS_DEFAULT_SCALE(this.props.uiSize);
+            const workspaceConfig = defaultsDeep({},
+                Blocks.defaultOptions,
+                this.props.options,
+                {
+                    rtl: this.props.isRtl,
+                    toolbox: this.props.toolboxXML,
+                    colours: getColorsForTheme(this.getEffectiveTheme()),
+                    zoom: { startScale: uiScale }
+                }
+            );
+            this.workspace = this.ScratchBlocks.inject(this.blocks, workspaceConfig);
+
+            // ⑤ 设置主工作区缩放
+            this.workspace.setScale(uiScale);
+
+            // ⑥ 覆盖 flyout 宽度
+            const flyout = this.workspace.getFlyout();
+            if (flyout) {
+                flyout.DEFAULT_WIDTH = getFlyoutWidth(this.props.uiSize);
+            }
+
+            // ⑦ 覆盖 Toolbox.getWidth() 和 flyout.position()
+            this.patchToolboxGetWidth();
+            this.patchFlyoutPosition();
+
+            // ⑧ 注册变量/列表/函数创建按钮回调
+            const toolboxWorkspace = this.workspace.getFlyout().getWorkspace();
+            const varListButtonCallback = type =>
+                (() => this.ScratchBlocks.Variables.createVariable(this.workspace, null, type));
+            const procButtonCallback = () => {
+                this.ScratchBlocks.Procedures.createProcedureDefCallback_(this.workspace);
+            };
+            toolboxWorkspace.registerButtonCallback('MAKE_A_VARIABLE', varListButtonCallback(''));
+            toolboxWorkspace.registerButtonCallback('MAKE_A_LIST', varListButtonCallback('list'));
+            toolboxWorkspace.registerButtonCallback('MAKE_A_PROCEDURE', procButtonCallback);
+
+            this._renderedToolboxXML = this.props.toolboxXML;
+
+            // ⑨ 同步工具箱布局
+            this.syncToolboxWidths();
+
+            // ⑩ 禁用自动刷新工具箱（和 componentDidMount 一致）
+            this.setToolboxRefreshEnabled = this.workspace.setToolboxRefreshEnabled.bind(this.workspace);
+            this.workspace.setToolboxRefreshEnabled = () => {
+                this.setToolboxRefreshEnabled(false);
+            };
+
+            // ⑪ 重新监听工作区指标变化（缩放/平移）
+            addFunctionListener(this.workspace, 'translate', this.onWorkspaceMetricsChange);
+            addFunctionListener(this.workspace, 'zoom', this.onWorkspaceMetricsChange);
+
+            // ⑫ 重新连接 VM
+            this.attachVM();
+
+            // ⑬ 更新工作区背景色
+            this.updateWorkspaceBackground();
+
+            // ⑭ 从 VM 运行时重新加载全部积木（同时触发 toolbox XML 更新）
+            this.props.vm.refreshWorkspace();
+        } finally {
+            this._isReinitializing = false;
+        }
+    }
     componentDidMount () {
         this.ScratchBlocks = VMScratchBlocks(this.props.vm, this.props.useCatBlocks);
         this.ScratchBlocks.prompt = this.handlePromptStart;
@@ -110,7 +210,7 @@ class Blocks extends React.Component {
             {
                 rtl: this.props.isRtl,
                 toolbox: this.props.toolboxXML,
-                colours: getColorsForTheme(this.props.theme),
+                colours: getColorsForTheme(this.getEffectiveTheme()),
                 zoom: { startScale: uiScale }
             }
         );
@@ -166,6 +266,8 @@ class Blocks extends React.Component {
         addFunctionListener(this.workspace, 'zoom', this.onWorkspaceMetricsChange);
 
         this.attachVM();
+        // 初始化工作区背景色
+        this.updateWorkspaceBackground();
         // Only update blocks/vm locale when visible to avoid sizing issues
         // If locale changes while not visible it will get handled in didUpdate
         if (this.props.isVisible) {
@@ -204,10 +306,20 @@ class Blocks extends React.Component {
             this.props.customProceduresVisible !== nextProps.customProceduresVisible ||
             this.props.locale !== nextProps.locale ||
             this.props.anyModalVisible !== nextProps.anyModalVisible ||
-            this.props.stageSize !== nextProps.stageSize
+            this.props.stageSize !== nextProps.stageSize ||
+            this.props.brightDark !== nextProps.brightDark
         );
     }
     componentDidUpdate (prevProps) {
+        // 主题切换（Bright ↔ Dark）：完整销毁 + 重新注入工作区
+        // ScratchBlocks 在 inject() 时将颜色烘焙到动态 CSS 中，
+        // 仅修改 Blockly.Colours 无法更新分类栏按钮、flyout 积木颜色等
+        if (this.props.brightDark !== prevProps.brightDark) {
+            this.reinitializeWorkspace();
+            // reinitializeWorkspace 内部已调用 vm.refreshWorkspace()，
+            // 会触发 onWorkspaceUpdate → 更新 toolboxXML → 自动调用 requestToolboxUpdate
+            return;
+        }
         // If any modals are open, call hideChaff to close z-indexed field editors
         if (this.props.anyModalVisible && !prevProps.anyModalVisible) {
             this.ScratchBlocks.hideChaff();
@@ -493,13 +605,13 @@ class Blocks extends React.Component {
             const targetSounds = target.getSounds();
             const dynamicBlocksXML = injectExtensionCategoryTheme(
                 this.props.vm.runtime.getBlocksXML(target),
-                this.props.theme
+                this.getEffectiveTheme()
             );
             return makeToolboxXML(false, target.isStage, target.id, dynamicBlocksXML,
                 targetCostumes[targetCostumes.length - 1].name,
                 stageCostumes[stageCostumes.length - 1].name,
                 targetSounds.length > 0 ? targetSounds[targetSounds.length - 1].name : '',
-                getColorsForTheme(this.props.theme)
+                getColorsForTheme(this.getEffectiveTheme())
             );
         } catch {
             return null;
@@ -582,7 +694,7 @@ class Blocks extends React.Component {
                     if (blockInfo.info && blockInfo.info.isDynamic) {
                         dynamicBlocksInfo.push(blockInfo);
                     } else if (blockInfo.json) {
-                        staticBlocksJson.push(injectExtensionBlockTheme(blockInfo.json, this.props.theme));
+                        staticBlocksJson.push(injectExtensionBlockTheme(blockInfo.json, this.getEffectiveTheme()));
                     }
                     // otherwise it's a non-block entry such as '---'
                 });
@@ -779,6 +891,7 @@ Blocks.propTypes = {
     stageSize: PropTypes.oneOf(Object.keys(STAGE_DISPLAY_SIZES)).isRequired,
     theme: PropTypes.oneOf(Object.keys(themeMap)),
     toolboxXML: PropTypes.string,
+    brightDark: PropTypes.string,
     updateMetrics: PropTypes.func,
     updateToolboxState: PropTypes.func,
     useCatBlocks: PropTypes.bool,
@@ -824,7 +937,8 @@ const mapStateToProps = state => ({
     customProceduresVisible: state.scratchGui.customProcedures.active,
     workspaceMetrics: state.scratchGui.workspaceMetrics,
     useCatBlocks: isTimeTravel2020(state),
-    uiSize: selectedUISize(state)
+    uiSize: selectedUISize(state),
+    brightDark: selectedBrightDark(state)
 });
 
 const mapDispatchToProps = dispatch => ({

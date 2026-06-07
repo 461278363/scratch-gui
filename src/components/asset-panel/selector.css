@@ -7,7 +7,11 @@
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    background: $ui-tertiary;
+    background: var(--ui-tertiary, #D9E3F2);
+}
+
+[data-theme="dark"] .wrapper {
+    background: #2B2D30; /* 列表区 = 深灰 */
 }
 
 .new-buttons {
@@ -20,7 +24,7 @@
     align-items: center;
     justify-content: space-around;
     padding: 0.75rem 0;
-    color: $looks-secondary;
+    color: var(--looks-secondary, #855CD6);
     text-align: center;
     background: none;
 }
@@ -33,7 +37,7 @@ $fade-out-distance: 100px;
     bottom: 0;
     left: 0;
     right:0;
-    background: linear-gradient(rgba(232,237,241, 0),rgba(232,237,241, 1));
+    background: linear-gradient(rgba(232,237,241, 0), var(--ui-tertiary, #D9E3F2));
     height: $fade-out-distance;
     width: 100%;
     pointer-events: none;
@@ -80,6 +84,6 @@ $fade-out-distance: 100px;
 
 
 .list-item.placeholder {
-    background: white;
+    background: var(--ui-white, #FFFFFF);
     filter: opacity(15%) brightness(0%);
 }

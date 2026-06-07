@@ -37,19 +37,19 @@
 
 [dir="ltr"] .input-group {
     padding-right: calc(2 * $space);
-    border-right: 1px dashed $ui-black-transparent;
+    border-right: 1px dashed var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 [dir="rtl"] .input-group {
     padding-left: calc(2 * $space);
-    border-left: 1px dashed $ui-black-transparent;
+    border-left: 1px dashed var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 [dir="rtl"] .row-reverse > .input-group {
     padding-left: 0;
     padding-right: calc(2 * $space);
     border-left: none;
-    border-right: 1px dashed $ui-black-transparent;
+    border-right: 1px dashed var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 .waveform-container {
@@ -60,8 +60,8 @@
 
     position: relative;
 
-    background: hsla(300, 53%, 60%, 0.15);
-    border: 1px solid $ui-black-transparent;
+    background: var(--sound-editor-waveform-bg, hsla(300, 53%, 60%, 0.15));
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: 5px;
 
     margin-top: 20px;
@@ -74,9 +74,9 @@ $border-radius: 0.25rem;
     height: 2rem;
     padding: 0.35rem;
     outline: none;
-    background: white;
+    background: var(--ui-white, #FFFFFF);
     border-radius: $border-radius;
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     cursor: pointer;
     font-size: 0.85rem;
     user-select: none;
@@ -85,7 +85,7 @@ $border-radius: 0.25rem;
 }
 
 .button:active {
-    background: $looks-transparent;
+    background: var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
 
 .button:focus::before {
@@ -95,7 +95,7 @@ $border-radius: 0.25rem;
     right: -1px;
     bottom: -1px;
     left: -1px;
-    border: 1px solid $looks-secondary;
+    border: 1px solid var(--looks-secondary, #855CD6);
     z-index: 1;
 }
 
@@ -110,9 +110,9 @@ $border-radius: 0.25rem;
     height: 3rem;
     width: 3rem;
     outline: none;
-    background: $looks-secondary;
+    background: var(--looks-secondary, #855CD6);
     border-radius: 100%;
-    border: 4px solid $ui-white-dim;
+    border: 4px solid var(--ui-white-dim, hsla(0, 100%, 100%, 0.75));
     cursor: pointer;
     padding: 0.75rem;
     user-select: none;
@@ -132,7 +132,7 @@ $border-radius: 0.25rem;
 .trim-button {
     display: flex;
     align-items: center;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     font-size: 0.625rem;
     user-select: none;
 
@@ -152,7 +152,7 @@ $border-radius: 0.25rem;
 
 .effect-button {
     flex-basis: 60px;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     font-size: 0.625rem;
     user-select: none;
     padding: 0.25rem 0;
@@ -170,7 +170,7 @@ $border-radius: 0.25rem;
 
 .tool-button {
     flex-basis: 60px;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     font-size: 0.625rem;
     user-select: none;
     padding: 0.25rem 0;
@@ -212,7 +212,7 @@ $border-radius: 0.25rem;
 
 [dir="rtl"] .button:not(:last-child) {
     border-left: none;
-    border-right: 1px solid $ui-black-transparent;
+    border-right: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 .button-group .button:first-child,

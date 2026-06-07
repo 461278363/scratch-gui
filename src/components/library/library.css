@@ -6,7 +6,7 @@
     justify-content: flex-start;
     align-content: flex-start;
     align-items: flex-start;
-    background: $ui-secondary;
+    background: var(--ui-secondary, #E9F1FC);
     flex-grow: 1;
     flex-wrap: wrap;
     overflow-y: auto;
@@ -28,7 +28,7 @@
   padding-Left: .5rem;
   font-weight: bold;
   font-size: 2rem;
-  color: $text-primary;
+  color: var(--text-primary, #575E75);
 }
 
 .library-category-items {
@@ -43,7 +43,7 @@
     justify-content: flex-start;
     align-items: center;
     height: calc($library-filter-bar-height + 2rem); /* padding */
-    background-color: $looks-transparent;
+    background-color: var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
     padding: 0 1rem;
     font-size: .875rem;
 }

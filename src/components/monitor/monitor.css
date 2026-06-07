@@ -4,9 +4,9 @@
 
 .monitor-container {
     position: absolute;
-    background: $ui-primary;
+    background: var(--ui-primary, #E5F0FF);
     z-index: $z-index-monitor;
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: calc($space / 2);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 0.75rem;
@@ -75,18 +75,18 @@
 }
 
 .list-header {
-    background: $ui-white;
-    border-bottom: 1px solid $ui-black-transparent;
+    background: var(--ui-white, #FFFFFF);
+    border-bottom: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     text-align: center;
     padding: 3px;
     font-size: 0.75rem;
     font-weight: bold;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     width: 100%;
 }
 
 .list-body {
-    background: $ui-primary;
+    background: var(--ui-primary, #E5F0FF);
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -106,7 +106,7 @@
 
 .list-index {
     font-weight: bold;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     margin: 0 3px;
 }
 
@@ -115,20 +115,20 @@
     text-align: left;
     margin: 0 3px;
     border-radius: calc($space / 2);
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     flex-grow: 1;
     height: 22px;
 }
 
 .list-footer {
-    background: $ui-white;
+    background: var(--ui-white, #FFFFFF);
     display: flex;
     flex-direction: row;
     justify-content: space-between;
     padding: 3px;
     font-size: 0.75rem;
     font-weight: bold;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
 }
 
 .list-empty {

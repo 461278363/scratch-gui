@@ -10,7 +10,7 @@
     display: block;
 
     border-radius: $space;
-    border: $stage-standard-border-width solid $ui-black-transparent;
+    border: $stage-standard-border-width solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     overflow: hidden;
 
     /* @todo: This is for overriding the value being set somewhere. Where is it being set? */
@@ -81,7 +81,7 @@ stage doesn't "spill" out from under its rounded corners. instead, shift these o
     top: 0;
     left: 0;
     z-index: $z-index-dragging-sprite;
-    filter: drop-shadow(5px 5px 5px $ui-black-transparent);
+    filter: drop-shadow(5px 5px 5px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15)));
 }
 
 .stage-bottom-wrapper {
@@ -108,8 +108,8 @@ stage doesn't "spill" out from under its rounded corners. instead, shift these o
 }
 
 .frame {
-    background: $looks-transparent;
-    border: 2px solid $looks-secondary;
+    background: var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
+    border: 2px solid var(--looks-secondary, #855CD6);
     border-radius: 0.5rem;
     animation-name: flash;
     animation-duration: 0.75s;
@@ -132,7 +132,7 @@ stage doesn't "spill" out from under its rounded corners. instead, shift these o
     padding: 1rem;
     border-radius: 100%;
     background: rgba(255,255,255,0.75);
-    border: 3px solid $ui-white;
+    border: 3px solid var(--ui-white, #FFFFFF);
     display: flex;
     justify-content: center;
     align-items: center;

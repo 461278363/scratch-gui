@@ -27,8 +27,8 @@
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: $menu-bar-standard-font-size;
     font-weight: bold;
-    background-color: $looks-secondary;
-    color: $ui-white;
+    background-color: var(--looks-secondary, #855CD6);
+    color: var(--ui-white, #FFFFFF);
 }
 
 .main-menu {
@@ -55,7 +55,7 @@
     display: flex;
     padding: 0 0.25rem;
     text-decoration: none;
-    color: $ui-white;
+    color: var(--ui-white, #FFFFFF);
     user-select: none;
     align-self: center;
     position: relative;
@@ -70,7 +70,7 @@
 
 .menu-bar-item.active,
 .menu-bar-item.hoverable:hover {
-    background-color: $ui-black-transparent;
+    background-color: var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 .menu-bar-item.growable {
@@ -105,12 +105,12 @@
 }
 
 .feedback-link {
-    color: $looks-secondary;
+    color: var(--looks-secondary, #855CD6);
     text-decoration: none;
 }
 
 .feedback-button {
-    background-color: $ui-white;
+    background-color: var(--ui-white, #FFFFFF);
     height: 34px;
 }
 
@@ -129,7 +129,7 @@
 }
 
 .remix-button {
-    background-color: $pen-primary
+    background-color: var(--pen-primary, #0FBD8C)
 }
 
 .remix-button-icon {

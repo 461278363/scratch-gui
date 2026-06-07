@@ -3,18 +3,18 @@
 
 .question-container {
     margin: $space;
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: $space;
     border-width: 2px;
     padding: 1rem;
-    background: white;
+    background: var(--ui-white, #FFFFFF);
 }
 
 .question-label {
     font-size: 0.75rem;
     font-weight: bold;
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     padding-bottom: $space;
 }
 
@@ -34,7 +34,7 @@
     border-radius: 100%;
 
     color: white;
-    background: $looks-secondary;
+    background: var(--looks-secondary, #855CD6);
 }
 
 [dir="ltr"] .question-submit-button {
@@ -60,7 +60,7 @@
 }
 
 .question-input > input:focus {
-    box-shadow: 0px 0px 0px 3px $looks-transparent;
+    box-shadow: 0px 0px 0px 3px var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
 
 .question-submit-button-icon {

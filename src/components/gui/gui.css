@@ -8,7 +8,7 @@
 
 .body-wrapper {
     height: calc(100% - $menu-bar-height);
-    background-color: $ui-primary;
+    background-color: var(--ui-primary, #E5F0FF);
 }
 
 .body-wrapper * {
@@ -75,13 +75,13 @@
     margin-bottom: 0;
 
     border-radius: 1rem 1rem 0 0;
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 
     padding: 0.125rem 1.25rem 0;
     font-size: 0.75rem;
 
-    background-color: $ui-tertiary;
-    color: $text-primary-transparent;
+    background-color: var(--ui-tertiary, #D9E3F2);
+    color: var(--text-primary-transparent, hsla(225, 15%, 40%, 0.75));
 
     display: flex;
     justify-content: center;
@@ -119,14 +119,25 @@
 }
 
 .tab:hover {
-  background-color: $ui-primary;
+  background-color: var(--ui-primary, #E5F0FF);
 }
 
 .tab.is-selected {
     height: 90%;
-    color: $looks-secondary;
-    background-color: $ui-white;
+    color: var(--looks-secondary, #855CD6);
+    background-color: var(--ui-white, #FFFFFF);
     z-index: 4; /* Make sure selected is always above */
+}
+
+/* ---- 暗色主题：标签选中=浅灰、未选中=深灰 ---- */
+[data-theme="dark"] .tab {
+    background-color: #2B2D30;
+}
+[data-theme="dark"] .tab:hover {
+    background-color: #2B2D30;
+}
+[data-theme="dark"] .tab.is-selected {
+    background-color: #3C3F42;
 }
 
 .tab img {
@@ -163,7 +174,7 @@
 .tab.is-selected:focus {
     outline: none;
     box-shadow: none;
-    border-color: $ui-black-transparent;
+    border-color: var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 .tab.is-selected:focus:after {
@@ -236,9 +247,9 @@
     left: 0;
     right: 0;
     z-index: $z-index-extension-button;
-    background: $looks-secondary;
+    background: var(--looks-secondary, #855CD6);
 
-    border: 1px solid $looks-secondary;
+    border: 1px solid var(--looks-secondary, #855CD6);
     box-sizing: content-box; /* To match scratch-block vertical toolbox borders */
 }
 

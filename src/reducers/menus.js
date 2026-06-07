@@ -81,7 +81,7 @@ const initialState = {
     [MENU_UI_SIZE]: false,
     // 当前选中的 UI Size 和 Theme 选项
     uiSize: 'default',
-    brightDark: 'bright'
+    brightDark: typeof localStorage !== 'undefined' ? (localStorage.getItem('scratchBrightDark') || 'bright') : 'bright'
 };
 
 const reducer = function (state, action) {

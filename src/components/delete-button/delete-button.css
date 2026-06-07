@@ -18,9 +18,9 @@
   overflow: hidden;  /* Mask the icon animation */
   width: 1.75rem;
   height: 1.75rem;
-  box-shadow: 0px 0px 0px 2px $looks-transparent;
-  background-color: $looks-secondary;
-  color: $ui-white;
+  box-shadow: 0px 0px 0px 2px var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
+  background-color: var(--looks-secondary, #855CD6);
+  color: var(--ui-white, #FFFFFF);
   border-radius: 50%;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
   user-select: none;
@@ -29,7 +29,7 @@
 }
 
 .delete-button-clicked {
-  background-color: $data-primary;
+  background-color: var(--data-primary, #FF8C1A);
 }
 
 .delete-icon {

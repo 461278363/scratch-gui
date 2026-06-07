@@ -103,3 +103,32 @@
     min-width: auto;
     min-height: auto;
 }
+
+/* ===== 暗色主题 — 积木区环境颜色 ===== */
+/* 积木编辑区域背景 */
+[data-theme="dark"] .blocks :global(.blocklySvg) {
+    background-color: #121212 !important;
+}
+/* 分类栏背景 */
+[data-theme="dark"] .blocks :global(.blocklyToolboxDiv),
+[data-theme="dark"] .blocks :global(.scratchCategoryMenu) {
+    background-color: #121212 !important;
+}
+/* 积木列表外层（容器，调透明度可透出画布） */
+[data-theme="dark"] .blocks :global(.blocklyFlyout) {
+    background-color: rgba(18, 18, 18, 0.2) !important;
+}
+/* 积木列表内层（SVG背景矩形，fill-opacity=1全不透明 0全透明） */
+[data-theme="dark"] .blocks :global(.blocklyFlyoutBackground) {
+    fill: #121212 !important;
+    fill-opacity: 0.2 !important;
+}
+/* 网格点颜色和透明度 */
+[data-theme="dark"] .blocks :global(pattern[id^="blocklyGridPattern"]) line {
+    stroke: #3b3b3b !important;
+    opacity: 1;
+}
+/* 积木内输入框背景（禁止变白） */
+[data-theme="dark"] :global(.blocklyHtmlInput) {
+    background-color: #4C4C4C !important;
+}

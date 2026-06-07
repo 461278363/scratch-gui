@@ -4,15 +4,16 @@
 .input-form {
     height: 2rem;
     padding: 0 0.75rem;
+    background-color: var(--ui-white, #FFFFFF);
 
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 0.625rem;
     font-weight: bold;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
 
     border-width: 1px;
     border-style: solid;
-    border-color: $ui-black-transparent;
+    border-color: var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: 2rem;
 
     outline: none;
@@ -32,12 +33,12 @@
 }
 
 .input-form:hover {
-    border-color: $looks-secondary;
+    border-color: var(--looks-secondary, #855CD6);
 }
 
 .input-form:focus {
-    border-color: $looks-secondary;
-    box-shadow: 0 0 0 0.25rem $looks-transparent;
+    border-color: var(--looks-secondary, #855CD6);
+    box-shadow: 0 0 0 0.25rem var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
 
 .input-small {

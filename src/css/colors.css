@@ -1,3 +1,192 @@
+/* ============================================================
+ * 主题颜色控制面板 ① — 全局 UI 颜色（CSS 变量）
+ * ============================================================
+ *
+ * 主题文件地图（按编辑频率排列）：
+ *
+ *   【① 本文件】 全局 UI 颜色（面板、文字、按钮、输入框、滚动条）
+ *     └ 控制：整个界面除积木区外的所有颜色
+ *     └ 机制：:root / [data-theme="dark"] CSS 变量 → 所有组件自动响应
+ *
+ *   【②】 src/lib/themes/dark/index.js   积木组件颜色（primary/secondary）
+ *     └ 控制：积木块本身的颜色、文字、输入框背景
+ *     └ 机制：切换主题时通过 reinitializeWorkspace() 注入 ScratchBlocks
+ *
+ *   【③】 src/components/blocks/blocks.css 积木区环境颜色
+ *     └ 控制：画布背景、分类栏、积木列表、网格点、输入框、透明度
+ *     └ 机制：[data-theme="dark"] CSS 覆盖
+ *
+ *   【④】 src/lib/themes/default/index.js  默认积木颜色（一般不动）
+ *   【⑤】 src/components/gui/gui.css      标签页暗色覆盖
+ *   【⑥】 src/components/asset-panel/      造型/声音面板暗色覆盖
+ *
+ * ============================================================ */
+
+/* ---- 亮色主题 (Bright) - 默认 ---- */
+:root,
+[data-theme="bright"] {
+    --ui-primary: hsla(215, 100%, 95%, 1); /* #E5F0FF 页面主背景色 */
+    --ui-secondary: hsla(215, 75%, 95%, 1); /* #E9F1FC 次级背景色 */
+    --ui-tertiary: hsla(215, 50%, 90%, 1); /* #D9E3F2 第三级背景色 */
+
+    --ui-modal-overlay: hsla(215, 100%, 65%, 0.9); /* 弹窗弹出时的背景遮罩 */
+
+    --ui-white: hsla(0, 100%, 100%, 1); /* #FFFFFF 卡片、面板白色背景 */
+    --ui-white-dim: hsla(0, 100%, 100%, 0.75); /* 白色 75%透明 */
+    --ui-white-transparent: hsla(0, 100%, 100%, 0.25); /* 白色 25%透明 */
+    --ui-transparent: hsla(0, 100%, 100%, 0); /* 完全透明 */
+
+    --ui-black-transparent: hsla(0, 0%, 0%, 0.15); /* 黑色 15%透明（用于阴影/叠加） */
+    --ui-black-transparent-10: hsla(0, 0%, 0%, 0.10); /* 黑色 10%透明 */
+
+    --ui-green: hsla(163, 85%, 35%, 1); /* #0DA57A 成功/确认绿色 */
+    --ui-green-2: hsla(163, 85%, 40%, 1); /* #0FBD8C 第二绿色 */
+
+    --text-primary: hsla(225, 15%, 40%, 1); /* #575E75 主要文字颜色 */
+    --text-primary-transparent: hsla(225, 15%, 40%, 0.75); /* 文字色 75%透明 */
+
+    --motion-primary: hsla(215, 100%, 65%, 1); /* #4C97FF 运动分类颜色（蓝色） */
+    --motion-tertiary: hsla(215, 60%, 50%, 1); /* #3373CC 运动分类第三级 */
+
+    --looks-secondary: hsla(260, 60%, 60%, 1); /* #855CD6 外观分类颜色（紫色） */
+    --looks-transparent: hsla(260, 60%, 60%, 0.35); /* 紫色 35%透明 */
+    --looks-light-transparent: hsla(260, 60%, 60%, 0.15); /* 紫色 15%透明 */
+    --looks-secondary-dark: hsla(260, 42%, 51%, 1); /* #714EB6 深紫色 */
+
+    --red-primary: hsla(20, 100%, 55%, 1); /* #FF661A 红色（删除/警告） */
+    --red-tertiary: hsla(20, 100%, 45%, 1); /* #E64D00 红色第三级 */
+
+    --sound-primary: hsla(300, 53%, 60%, 1); /* #CF63CF 声音分类颜色（品红） */
+    --sound-tertiary: hsla(300, 48%, 50%, 1); /* #BD42BD 品红第三级 */
+    --sound-editor-waveform-bg: hsla(300, 53%, 60%, 0.15); /* 声音编辑器波形背景 */
+
+    --control-primary: hsla(38, 100%, 55%, 1); /* #FFAB19 控制分类颜色（橙黄） */
+
+    --data-primary: hsla(30, 100%, 55%, 1); /* #FF8C1A 变量分类颜色（橙色） */
+
+    --pen-primary: hsla(163, 85%, 40%, 1); /* #0FBD8C 画笔分类颜色（绿色） */
+    --pen-transparent: hsla(163, 85%, 40%, 0.25); /* 绿色 25%透明 */
+    --pen-tertiary: hsla(163, 86%, 30%, 1); /* #0B8E69 绿色第三级 */
+
+    --error-primary: hsla(30, 100%, 55%, 1); /* #FF8C1A 错误提示色 */
+    --error-light: hsla(30, 100%, 70%, 1); /* #FFB366 浅错误色 */
+    --error-transparent: hsla(30, 100%, 55%, 0.25); /* 错误色 25%透明 */
+
+    --extensions-primary: hsla(163, 85%, 40%, 1); /* #0FBD8C 扩展分类颜色 */
+    --extensions-tertiary: hsla(163, 85%, 30%, 1); /* #0B8E69 扩展第三级 */
+    --extensions-transparent: hsla(163, 85%, 40%, 0.35); /* 扩展色 35%透明 */
+    --extensions-light: hsla(163, 57%, 85%, 1); /* 浅扩展色 */
+
+    --drop-highlight: hsla(215, 100%, 77%, 1); /* 拖拽时的高亮提示色 */
+}
+
+/* ---- 深色主题 (Dark) ---- */
+[data-theme="dark"] {
+    /* ======== 背景色 ======== */
+    --ui-primary: hsla(220, 5%, 18%, 1); /* #2B2D30 页面主背景色 */
+    --ui-secondary: hsla(220, 4%, 21%, 1); /* #333538 次级背景色 */
+    --ui-tertiary: hsla(220, 4%, 25%, 1); /* #3C3F42 第三级背景色 */
+
+    /* ======== 模态遮罩 ======== */
+    --ui-modal-overlay: hsla(215, 40%, 15%, 0.9); /* 弹窗弹出时的背景遮罩 */
+
+    /* ======== 面板/卡片 ======== */
+    --ui-white: rgb(52, 46, 46); /* #2B2D30 卡片、面板背景色 */
+    --ui-white-dim: hsla(220, 5%, 18%, 0.75); /* 面板色 75%透明 */
+    --ui-white-transparent: hsla(220, 5%, 18%, 0.25); /* 面板色 25%透明 */
+    --ui-transparent: hsla(0, 0%, 0%, 0); /* 完全透明 */
+
+    /* ======== 叠加层（暗→白半透明，用于深色背景上叠加） ======== */
+    --ui-black-transparent: hsla(0, 0%, 100%, 0.10); /* 白色 10%透明 */
+    --ui-black-transparent-10: hsla(0, 0%, 100%, 0.08); /* 白色 8%透明 */
+
+    /* ======== 功能色 ======== */
+    --ui-green: hsla(163, 80%, 40%, 1); /* #14C48A 成功/确认绿色 */
+    --ui-green-2: hsla(163, 80%, 45%, 1); /* #18D89A 第二绿色 */
+
+    /* ======== 文字色 ======== */
+    --text-primary: rgb(255, 255, 255); /* #CDD0D6 主要文字颜色 */
+    --text-primary-transparent: hsl(0, 0%, 100%); /* 文字色 75%透明 */
+
+    /* ======== 分类颜色 ======== */
+    --motion-primary: hsla(215, 100%, 72%, 1); /* #6DB5FF 运动分类（蓝色） */
+    --motion-tertiary: hsla(215, 70%, 58%, 1); /* #5090E0 运动第三级 */
+
+    --looks-secondary: hsla(260, 60%, 60%, 1); /* #A57FE0 外观分类（紫色） */
+    --looks-transparent: hsla(260, 50%, 65%, 0.25); /* 紫色 25%透明 */
+    --looks-light-transparent: hsla(260, 50%, 65%, 0.10); /* 紫色 10%透明 */
+    --looks-secondary-dark: hsla(260, 45%, 58%, 1); /* #8B6FCC 深紫色 */
+
+    --red-primary: hsla(20, 100%, 62%, 1); /* #FF7A3A 红色（删除/警告） */
+    --red-tertiary: hsla(20, 100%, 52%, 1); /* #E66020 红色第三级 */
+
+    --sound-primary: hsla(300, 48%, 67%, 1); /* #D97BD9 声音分类（品红） */
+    --sound-tertiary: hsla(300, 43%, 57%, 1); /* #CC5ECC 品红第三级 */
+    --sound-editor-waveform-bg: hsla(300, 48%, 67%, 0.15); /* 声音编辑器波形背景 */
+
+    --control-primary: hsla(38, 100%, 62%, 1); /* #FFB940 控制分类（橙黄） */
+
+    --data-primary: hsla(30, 100%, 62%, 1); /* #FFA040 变量分类（橙色） */
+
+    --pen-primary: hsla(163, 75%, 47%, 1); /* #1ED0A0 画笔分类（绿色） */
+    --pen-transparent: hsla(163, 75%, 47%, 0.20); /* 绿色 20%透明 */
+    --pen-tertiary: hsla(163, 70%, 37%, 1); /* #15A87D 绿色第三级 */
+
+    /* ======== 错误色 ======== */
+    --error-primary: hsla(30, 100%, 62%, 1); /* #FFA040 错误提示色 */
+    --error-light: hsla(30, 100%, 72%, 1); /* 浅错误色 */
+    --error-transparent: hsla(30, 100%, 55%, 0.20); /* 错误色 20%透明 */
+
+    /* ======== 扩展色 ======== */
+    --extensions-primary: hsla(163, 75%, 47%, 1); /* #1ED0A0 扩展分类颜色 */
+    --extensions-tertiary: hsla(163, 70%, 37%, 1); /* #15A87D 扩展第三级 */
+    --extensions-transparent: hsla(163, 75%, 47%, 0.30); /* 扩展色 30%透明 */
+    --extensions-light: hsla(163, 40%, 32%, 1); /* 浅扩展色 */
+
+    /* ======== 拖拽高亮 ======== */
+    --drop-highlight: hsla(215, 100%, 70%, 1); /* 拖拽时的高亮提示色 */
+}
+
+/* ============================================
+ * scratch-paint 造型编辑器的暗色覆盖
+ * scratch-paint 使用 CSS Modules，类名格式为 [文件名]_[原始类名]_[5位hash]
+ * 这里用 [class*="..."] 部分匹配，不依赖完整的 hash 值
+ * ============================================ */
+[data-theme="dark"] {
+    /* ---- 造型编辑器全局文字颜色 ---- */
+    /* 影响：工具栏按钮标签（造型/填充/轮廓/组合/拆散/复制 等） */
+    [class*="paint-editor_editor-container"] {
+        color: var(--text-primary, #CDD0D6);
+    }
+
+    /* ---- 造型编辑器输入框（字体名、字号等）---- */
+    [class*="input_input-form_"] {
+        background-color: var(--ui-white, #2B2D30);
+        color: var(--text-primary, #CDD0D6);
+        border-color: var(--ui-black-transparent, hsla(0, 0%, 100%, 0.10));
+    }
+
+    /* ---- 字体下拉框 ---- */
+    [class*="font-dropdown_font-dropdown"] {
+        color: var(--text-primary, #CDD0D6);
+    }
+    [class*="font-dropdown_mod-context-menu"] {
+        background-color: var(--ui-white, #2B2D30);
+        color: var(--text-primary, #CDD0D6);
+    }
+
+    /* ---- 画布容器边框 ---- */
+    [class*="paint-editor_canvas-container"] {
+        border-color: var(--ui-black-transparent, hsla(0, 0%, 100%, 0.10));
+    }
+}
+
+/* ============================================
+ * SCSS 变量 (SCSS Variables)
+ * 保留原有变量，向后兼容尚未迁移到 var() 的旧代码
+ * 注意：这些值在编译时固定，不会随 data-theme 变化
+ * ============================================ */
+
 $ui-primary: hsla(215, 100%, 95%, 1); /* #E5F0FF */
 $ui-secondary: hsla(215, 75%, 95%, 1); /* #E9F1FC */
 $ui-tertiary: hsla(215, 50%, 90%, 1); /* #D9E3F2 */

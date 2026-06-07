@@ -4,10 +4,14 @@
 .wrapper {
     display: flex;
     flex-grow: 1;
-    border: 1px solid $ui-black-transparent;
-    background: white;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
+    background: var(--ui-white, #FFFFFF);
     font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     font-size: 0.85rem;
+}
+
+[data-theme="dark"] .wrapper {
+    background: #3C3F42; /* 工作区 = 浅灰 */
 }
 
 [dir="ltr"] .wrapper {
@@ -28,9 +32,9 @@
 }
 
 [dir="ltr"] .detail-area {
-    border-left: 1px solid $ui-black-transparent;
+    border-left: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 [dir="rtl"] .detail-area {
-    border-right: 1px solid $ui-black-transparent;
+    border-right: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }

@@ -1,7 +1,7 @@
 import classNames from 'classnames';
 import omit from 'lodash.omit';
 import PropTypes from 'prop-types';
-import React from 'react';
+import React, {useEffect} from 'react';
 import {defineMessages, FormattedMessage, injectIntl, intlShape} from 'react-intl';
 import {connect} from 'react-redux';
 import MediaQuery from 'react-responsive';
@@ -34,6 +34,7 @@ import TelemetryModal from '../telemetry-modal/telemetry-modal.jsx';
 import layout, {STAGE_SIZE_MODES} from '../../lib/layout-constants';
 import {resolveStageSize} from '../../lib/screen-utils';
 import {themeMap} from '../../lib/themes';
+import {selectedBrightDark} from '../../reducers/menus.js';
 
 import styles from './gui.css';
 import addExtensionIcon from './icon--extensions.svg';
@@ -127,8 +128,15 @@ const GUIComponent = props => {
         theme,
         tipsLibraryVisible,
         vm,
+        brightDark,
         ...componentProps
     } = omit(props, 'dispatch');
+
+    // 当 brightDark 状态变化时，同步到 DOM 的 data-theme 属性
+    useEffect(() => {
+        document.body.dataset.theme = brightDark;
+    }, [brightDark]);
+
     if (children) {
         return <Box {...componentProps}>{children}</Box>;
     }
@@ -390,6 +398,7 @@ GUIComponent.propTypes = {
     basePath: PropTypes.string,
     blocksTabVisible: PropTypes.bool,
     blocksId: PropTypes.string,
+    brightDark: PropTypes.string,
     canChangeLanguage: PropTypes.bool,
     canChangeTheme: PropTypes.bool,
     canCreateCopy: PropTypes.bool,
@@ -452,6 +461,7 @@ GUIComponent.defaultProps = {
     backpackVisible: false,
     basePath: './',
     blocksId: 'original',
+    brightDark: 'bright',
     canChangeLanguage: true,
     canChangeTheme: true,
     canCreateNew: false,
@@ -475,7 +485,8 @@ const mapStateToProps = state => ({
     // This is the button's mode, as opposed to the actual current state
     blocksId: state.scratchGui.timeTravel.year.toString(),
     stageSizeMode: state.scratchGui.stageSize.stageSize,
-    theme: state.scratchGui.theme.theme
+    theme: state.scratchGui.theme.theme,
+    brightDark: selectedBrightDark(state)
 });
 
 export default injectIntl(connect(

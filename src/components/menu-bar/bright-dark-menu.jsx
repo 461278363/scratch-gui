@@ -106,7 +106,11 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     onRequestOpen: () => dispatch(openBrightDarkMenu()),
-    onSelect: option => dispatch(selectBrightDark(option))
+    onSelect: option => {
+        dispatch(selectBrightDark(option));
+        // 持久化主题选择到 localStorage，以便刷新后保留
+        localStorage.setItem('scratchBrightDark', option);
+    }
 });
 
 export default connect(

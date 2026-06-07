@@ -7,7 +7,7 @@
     align-items: center;
     flex-grow: 1;
 
-    background: $ui-white;
+    background: var(--ui-white, #FFFFFF);
     border-radius: 10rem;
     user-select: none;
     height: $library-filter-bar-height;
@@ -35,7 +35,7 @@
 }
 
 .filter:focus-within {
-    box-shadow: 0 0 0 .25rem $looks-transparent;
+    box-shadow: 0 0 0 .25rem var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
 
 /*
@@ -108,7 +108,7 @@
     -webkit-appearance: none;
     outline: none;
     border: 0;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     font-size: 0.75rem;
     letter-spacing: 0.15px;
     cursor: text;
@@ -124,7 +124,7 @@
 
 .filter-input::placeholder {
     opacity: .5;
-    color: $text-primary;
+    color: var(--text-primary, #575E75);
     font-size: 0.875rem;
     letter-spacing: 0.15px;
 }

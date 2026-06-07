@@ -7,7 +7,7 @@
 }
 
 .body {
-    background: $ui-white;
+    background: var(--ui-white, #FFFFFF);
     padding: 1.5rem 2.25rem;
 }
 
@@ -31,7 +31,7 @@
 }
 
 .workspace :global(.blocklySvg) {
-    background-color: $ui-primary;
+    background-color: var(--ui-primary, #E5F0FF);
 }
 
 /* Row of "card" buttons for modifying custom procedures */
@@ -41,8 +41,8 @@
 }
 
 .option-card {
-    background: white;
-    border: 2px solid $ui-black-transparent;
+    background: var(--ui-white, #FFFFFF);
+    border: 2px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: $space;
     padding: calc($space * 2);
     text-align: center;
@@ -53,8 +53,8 @@
 }
 
 .option-card:hover {
-    border: 2px solid $looks-secondary;
-    box-shadow: 0px 0px 0px 4px $looks-transparent;
+    border: 2px solid var(--looks-secondary, #855CD6);
+    box-shadow: 0px 0px 0px 4px var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
 
 .option-card + .option-card {
@@ -83,17 +83,17 @@
 }
 
 .button-row button {
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: 0.25rem;
     padding: 0.75rem 1rem;
-    background: white;
+    background: var(--ui-white, #FFFFFF);
     font-weight: bold;
     font-size: 0.85rem;
 }
 
 .button-row button.ok-button {
-    background: $looks-secondary;
-    border: $looks-secondary;
+    background: var(--looks-secondary, #855CD6);
+    border: var(--looks-secondary, #855CD6);
     color: white;
 }
 

@@ -29,10 +29,10 @@
     margin-top: -50%;
 
     padding: 0.25rem;
-    border: 2px solid $looks-secondary;
-    background: $ui-white;
+    border: 2px solid var(--looks-secondary, #855CD6);
+    background: var(--ui-white, #FFFFFF);
     border-radius: 0.5rem;
 
     /* Use the same drop shadow as stage dragging */
-    box-shadow: 5px 5px 5px $ui-black-transparent;
+    box-shadow: 5px 5px 5px var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }

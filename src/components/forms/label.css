@@ -21,6 +21,7 @@
     font-size: 0.625rem;
     user-select: none;
     cursor: default;
+    color: var(--text-primary, #575E75);
 
     white-space: nowrap;
 }

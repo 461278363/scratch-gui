@@ -10,7 +10,7 @@
 }
 
 .stop-all:hover {
-    background-color: $looks-light-transparent;
+    background-color: var(--looks-light-transparent, hsla(260, 60%, 60%, 0.15));
 }
 
 .stop-all {

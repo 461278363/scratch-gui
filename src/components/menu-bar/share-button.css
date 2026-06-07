@@ -1,10 +1,10 @@
 @import "../../css/colors.css";
 
 .share-button {
-    background: $data-primary;
+    background: var(--data-primary, #FF8C1A);
 }
 
 .share-button-is-shared {
-    background: $ui-black-transparent;
+    background: var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     cursor: default;
 }

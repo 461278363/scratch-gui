@@ -8,7 +8,7 @@
 
 .button {
     margin: 0;
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     background: none;
     outline: none;
     cursor: pointer;
@@ -33,7 +33,7 @@
 
 [dir="rtl"] .button:not(:last-child) {
     border-left: none;
-    border-right: 1px solid $ui-black-transparent;
+    border-right: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
 }
 
 .button:focus::before {
@@ -43,7 +43,7 @@
     right: -1px;
     bottom: -1px;
     left: -1px;
-    border: 1px solid $looks-secondary;
+    border: 1px solid var(--looks-secondary, #855CD6);
 }
 
 /* round corners for first and last buttons */
@@ -65,7 +65,7 @@
 /* selected button styling */
 
 .button[aria-pressed='true'] {
-    background-color: $looks-light-transparent;
+    background-color: var(--looks-light-transparent, hsla(260, 60%, 60%, 0.15));
 }
 
 .button[aria-pressed='true'] > img {
@@ -75,7 +75,7 @@
 /* pressed button styling */
 
 .button:active {
-    background-color: $looks-transparent;
+    background-color: var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
 
 /* disabled styling */

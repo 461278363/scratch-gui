@@ -6,7 +6,7 @@
 }
 
 .body {
-    background: $ui-white;
+    background: var(--ui-white, #FFFFFF);
     padding: 1.5rem 2.25rem;
 }
 
@@ -18,11 +18,11 @@
 .min-input, .max-input {
     margin-bottom: 1.5rem;
     width: 100%;
-    border: 1px solid $ui-black-transparent;
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     border-radius: 5px;
     padding: 0 1rem;
     height: 3rem;
-    color: $text-primary-transparent;
+    color: var(--text-primary-transparent, hsla(225, 15%, 40%, 0.75));
     font-size: .875rem;
 }
 
@@ -34,15 +34,15 @@
 .button-row button {
     padding: 0.75rem 1rem;
     border-radius: 0.25rem;
-    background: white;
-    border: 1px solid $ui-black-transparent;
+    background: var(--ui-white, #FFFFFF);
+    border: 1px solid var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
     font-weight: 600;
     font-size: 0.85rem;
 }
 
 .button-row button.ok-button {
-    background: $looks-secondary;
-    border: $looks-secondary;
+    background: var(--looks-secondary, #855CD6);
+    border: var(--looks-secondary, #855CD6);
     color: white;
 }
 

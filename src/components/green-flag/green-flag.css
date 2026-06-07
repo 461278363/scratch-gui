@@ -11,9 +11,9 @@
 }
 
 .green-flag:hover {
-    background-color: $looks-light-transparent;
+    background-color: var(--looks-light-transparent, hsla(260, 60%, 60%, 0.15));
 }
 
 .green-flag.is-active {
-    background-color: $looks-transparent;
+    background-color: var(--looks-transparent, hsla(260, 60%, 60%, 0.35));
 }
