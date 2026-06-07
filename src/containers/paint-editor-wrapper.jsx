@@ -6,6 +6,7 @@ import PaintEditor from 'scratch-paint';
 import {inlineSvgFonts} from 'scratch-svg-renderer';
 
 import {connect} from 'react-redux';
+import {selectedUISize} from '../reducers/menus';
 
 class PaintEditorWrapper extends React.Component {
     constructor (props) {
@@ -51,6 +52,7 @@ class PaintEditorWrapper extends React.Component {
             <PaintEditor
                 {...componentProps}
                 image={vm.getCostume(selectedCostumeIndex)}
+                key={`${componentProps.imageId}-${componentProps.uiSize}`}
                 onUpdateImage={this.handleUpdateImage}
                 onUpdateName={this.handleUpdateName}
                 fontInlineFn={inlineSvgFonts}
@@ -67,6 +69,7 @@ PaintEditorWrapper.propTypes = {
     rotationCenterY: PropTypes.number,
     rtl: PropTypes.bool,
     selectedCostumeIndex: PropTypes.number.isRequired,
+    uiSize: PropTypes.string,
     vm: PropTypes.instanceOf(VM)
 };
 
@@ -85,6 +88,7 @@ const mapStateToProps = (state, {selectedCostumeIndex}) => {
         imageId: targetId && `${targetId}${costume.skinId}`,
         rtl: state.locales.isRtl,
         selectedCostumeIndex: index,
+        uiSize: selectedUISize(state),
         vm: state.scratchGui.vm,
         zoomLevelId: targetId
     };

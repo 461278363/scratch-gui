@@ -104,11 +104,35 @@
     min-height: auto;
 }
 
-/* ===== 缩放按钮的悬停和点击效果 ===== */
+/* ===== 缩放按钮：尺寸跟随 UI Size、悬停和点击效果 ===== */
+/* 用 transform:scale() 缩放，锚点统一在重置按钮右下角，避免重叠 */
+/* transform-box: fill-box 让缩放原点基于按钮自身，而非整个SVG画布 */
 .blocks :global(.blocklyZoom image) {
     cursor: pointer;
-    transition: opacity 0.15s ease, filter 0.15s ease;
+    transition: opacity 0.15s ease, filter 0.15s ease, transform 0.15s ease;
+    transform-box: fill-box;
 }
+/* 三个按钮的缩放锚点都指向重置按钮右下角（组内坐标 36, 124） */
+.blocks :global(.blocklyZoom image):nth-of-type(1) {
+    transform-origin: 36px 80px;   /* 缩小按钮：锚点=重置右下角-自身y(44) */
+}
+.blocks :global(.blocklyZoom image):nth-of-type(2) {
+    transform-origin: 36px 124px;  /* 放大按钮：锚点=重置右下角-自身y(0) */
+}
+.blocks :global(.blocklyZoom image):nth-of-type(3) {
+    transform-origin: 36px 36px;   /* 重置按钮：自身右下角(36,36) */
+}
+
+/* 大尺寸：所有按钮放大 1.25 倍 */
+html[data-ui-size="large"] .blocks :global(.blocklyZoom image) {
+    transform: scale(1.25);
+}
+
+/* 特大尺寸：所有按钮放大 1.5 倍 */
+html[data-ui-size="extraLarge"] .blocks :global(.blocklyZoom image) {
+    transform: scale(1.5);
+}
+
 .blocks :global(.blocklyZoom image:hover) {
     opacity: 0.75;
     filter: brightness(1.2);
@@ -116,6 +140,20 @@
 .blocks :global(.blocklyZoom image:active) {
     opacity: 0.5;
     filter: brightness(0.9);
+}
+
+/* ===== 暗色主题：缩放按钮反色 ===== */
+/* 原图标白底深色线条 → 反色后深底浅色线条，适配暗色画布 */
+[data-theme="dark"] .blocks :global(.blocklyZoom image) {
+    filter: invert(0.85);
+}
+[data-theme="dark"] .blocks :global(.blocklyZoom image:hover) {
+    filter: invert(0.85) brightness(1.2);
+    opacity: 0.75;
+}
+[data-theme="dark"] .blocks :global(.blocklyZoom image:active) {
+    filter: invert(0.85) brightness(0.9);
+    opacity: 0.5;
 }
 
 /* ===== 暗色主题 — 积木区环境颜色 ===== */

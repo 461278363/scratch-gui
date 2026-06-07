@@ -57,8 +57,8 @@ const ThemeMenu = ({
                 onClick={onRequestOpen}
             >
                 <img
+                    className={styles.icon}
                     src={themeInfo.icon}
-                    style={{width: 24}}
                 />
                 <span className={styles.submenuLabel}>
                     <FormattedMessage

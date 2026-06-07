@@ -91,9 +91,9 @@
     --ui-modal-overlay: hsla(215, 40%, 15%, 0.9); /* 弹窗弹出时的背景遮罩 */
 
     /* ======== 面板/卡片 ======== */
-    --ui-white: rgb(52, 46, 46); /* #2B2D30 卡片、面板背景色 */
-    --ui-white-dim: hsla(220, 5%, 18%, 0.75); /* 面板色 75%透明 */
-    --ui-white-transparent: hsla(220, 5%, 18%, 0.25); /* 面板色 25%透明 */
+    --ui-white: #3C3F42; /* 卡片、面板背景色（中性灰，与 --ui-tertiary 一致） */
+    --ui-white-dim: hsla(220, 4%, 25%, 0.75); /* 面板色 75%透明 */
+    --ui-white-transparent: hsla(220, 4%, 25%, 0.25); /* 面板色 25%透明 */
     --ui-transparent: hsla(0, 0%, 0%, 0); /* 完全透明 */
 
     /* ======== 叠加层（暗→白半透明，用于深色背景上叠加） ======== */
@@ -175,10 +175,60 @@
         color: var(--text-primary, #CDD0D6);
     }
 
-    /* ---- 画布容器边框 ---- */
+    /* ---- 画布容器 ---- */
     [class*="paint-editor_canvas-container"] {
         border-color: var(--ui-black-transparent, hsla(0, 0%, 100%, 0.10));
+        background-color: #3C3F42;
     }
+    /* ---- 画布本身 ---- */
+    [class*="paper-canvas_paper-canvas"] {
+        background-color: #3C3F42 !important;
+    }
+}
+
+/* ---- 造型编辑器模式选择器布局 ---- */
+/* 将 flex 改为 grid，使按钮排列更整齐 */
+[class*="mode-selector_"] {
+    display: grid;
+}
+
+/* ---- 角色选择器卡片：固定正方形比例 ---- */
+/* 原CSS只有min-height，宽度随rem变化，高度由内容决定，导致不同UI尺寸下比例不一致 */
+[class*="sprite-selector_sprite-wrapper"] {
+    aspect-ratio: 1 / 1;
+}
+
+/* ---- 画布底部控制栏：覆盖固定高度，随内容自适应 ---- */
+/* 原CSS height:36px 不随UI尺寸缩放，按钮内容增大后会溢出 */
+[class*="paint-editor_canvas-controls"] {
+    height: auto;
+    align-items: center;
+}
+
+/* ---- 转换按钮图标：随字号缩放 ---- */
+[class*="paint-editor_bitmap-button-icon"] {
+    flex-shrink: 0;
+    width: 1.5em;
+    height: 1.5em;
+    align-self: center;
+}
+
+/* ---- 画布容器背景（与 canvas 背景统一，消除白边） ---- */
+[class*="paint-editor_canvas-container"] {
+    background-color: #D9E3F2;
+    overflow: hidden;            /* 裁剪 canvas 左右超出部分 */
+}
+
+/* ---- 造型画布尺寸约束 ---- */
+/* canvas 高度填满容器 → 宽度 = 高度 × 4/3，居中，超出裁剪 */
+[class*="paper-canvas_paper-canvas"] {
+    top: 1px !important;
+    left: 0 !important;
+    right: 0 !important;
+    margin: auto !important;
+    height: calc(100% - 2px) !important;
+    width: auto !important;
+    aspect-ratio: 4 / 3 !important;       /* 宽度 = 高度 × 4/3 */
 }
 
 /* ============================================

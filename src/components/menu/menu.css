@@ -7,8 +7,8 @@
     background-color: var(--looks-secondary, #855CD6);
     padding: 0;
     margin: 0;
-    min-width: 186px;
-    max-width: 260px;
+    min-width: 11.625rem;
+    max-width: 16.25rem;
     overflow: visible;
     color: var(--ui-white, #FFFFFF);
     box-shadow: 0 8px 8px 0 var(--ui-black-transparent, hsla(0, 0%, 0%, 0.15));
@@ -24,9 +24,9 @@
 
 .menu-item {
     display: block;
-    line-height: 34px;
+    line-height: 2.125rem;
     white-space: nowrap;
-    padding: 0 10px;
+    padding: 0 0.625rem;
     font-size: .75rem;
     margin: 0;
     font-weight: bold;
@@ -51,8 +51,8 @@
     display: none;
     position: absolute;
     top: -1px;
-    min-width: 186px;
-    max-width: 260px;
+    min-width: 11.625rem;
+    max-width: 16.25rem;
     height: max-content;
     overflow: hidden;
     border-radius: 8px;
